@@ -1,107 +1,63 @@
-import { useEffect, useState } from 'react';
-import { collection, getDocs, query, DocumentData, where } from 'firebase/firestore';
-import { IconTrash } from '@tabler/icons';
-import { Card, Image, Text, Group, Button, ActionIcon, createStyles, Spoiler } from '@mantine/core';
+import { useState } from 'react';
+import { ActionIcon, Button, Paper, Image, Flex, Title, Text, NumberInput } from '@mantine/core';
+import { IconPlus, IconMinus, IconShoppingCart } from '@tabler/icons';
 
-import { ProductsCardProps } from '../../mock/products';
+import SelectVariants from './SelectVariants';
 
-import { db } from '../../services/firebase';
-
-const useStyles = createStyles((theme) => ({
-  card: {
-    backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : theme.white,
-  },
-
-  section: {
-    borderBottom: `1px solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[3]
-    }`,
-    paddingLeft: theme.spacing.md,
-    paddingRight: theme.spacing.md,
-    paddingBottom: theme.spacing.md,
-  },
-
-  like: {
-    color: theme.colors.red[6],
-  },
-
-  label: {
-    textTransform: 'uppercase',
-    fontSize: theme.fontSizes.xs,
-    fontWeight: 700,
-  },
-
-  spoilerLabel: {
-    fontSize: 12,
-    marginTop: 12,
-  },
-}));
-
-export default function ProductsCard({ id, image, name, description }: ProductsCardProps) {
-  const { classes } = useStyles();
-  const [data, setData] = useState<any>();
-
-  const variantsRef = collection(db, 'productVariants');
-
-  const getVariants = async () => {
-    try {
-      const q = query(variantsRef, where('productId', '==', id));
-      const data = await getDocs(q);
-
-      const result = data.docs.map((doc: DocumentData) => ({ ...doc.data(), id: doc.id }));
-
-      setData(result?.[0]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    getVariants();
-  }, []);
+export default function ProductsCard() {
+  const [total, setTotal] = useState<number>(0);
 
   return (
-    <Card withBorder radius="md" p="md" className={classes.card}>
-      <Card.Section>
-        <Image src={image} alt={name} height={180} />
-      </Card.Section>
+    <Paper shadow="lg" radius="lg" p="xl" w={320}>
+      <Image
+        radius="md"
+        height={160}
+        width="100%"
+        mb="md"
+        src="https://images.unsplash.com/photo-1511216335778-7cb8f49fa7a3?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=720&q=80"
+        alt="Random unsplash image"
+      />
+      <Title order={4} mb="sm">
+        Kopi Hitam
+      </Title>
 
-      <Card.Section className={classes.section} mt="md">
-        <Text size="sm" variant="gradient">
-          {id}
-        </Text>
-        <Group position="apart">
-          <Text size="lg" weight={500}>
-            {name}
-          </Text>
-          <Text size="sm">{data?.productVariants?.[0].price}</Text>
-        </Group>
-        <Spoiler
-          maxHeight={80}
-          classNames={{ control: classes.spoilerLabel }}
-          showLabel="Lihat Lebih Banyak"
-          hideLabel="Lihat Lebih Sedikit"
+      <Text fz="sm" mb="sm">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi, distinctio. dipisicing
+        elit. Animi, distinctio.
+      </Text>
+
+      <SelectVariants title="Ukuran" variants={['S', 'M', 'L']} />
+      <SelectVariants title="Rasa" variants={['Manis', 'Pahit']} />
+
+      <Title order={6} mb="xs">
+        Jumlah
+      </Title>
+      <Flex align="center" gap="xs" mb="sm">
+        <ActionIcon
+          disabled={total <= 0}
+          onClick={() => setTotal((prev) => prev - 1)}
+          radius="lg"
+          variant="default"
         >
-          <Text size="sm" mt="xs">
-            {description}
-          </Text>
-        </Spoiler>
-      </Card.Section>
-
-      <Card.Section className={classes.section}>
-        <Text mt="md" className={classes.label} color="dimmed">
-          Perfect for you, if you enjoy
-        </Text>
-      </Card.Section>
-
-      <Group mt="xs">
-        <Button radius="md" style={{ flex: 1 }}>
-          Masukan ke Keranjang
-        </Button>
-        <ActionIcon variant="default" radius="md" size={36}>
-          <IconTrash size={18} className={classes.like} stroke={1.5} />
+          <IconMinus size={12} />
         </ActionIcon>
-      </Group>
-    </Card>
+        <NumberInput
+          value={total}
+          radius="xl"
+          ta="right"
+          min={0}
+          onChange={(number: number) => setTotal(number)}
+          styles={{ input: { textAlign: 'center' } }}
+          defaultValue={0}
+          hideControls
+        />
+        <ActionIcon onClick={() => setTotal((prev) => prev + 1)} variant="default" radius="lg">
+          <IconPlus size={12} />
+        </ActionIcon>
+      </Flex>
+      <Button mt="sm" w="100%" radius="lg" leftIcon={<IconShoppingCart size={18} />}>
+        Tambah ke Keranjang
+      </Button>
+    </Paper>
   );
 }

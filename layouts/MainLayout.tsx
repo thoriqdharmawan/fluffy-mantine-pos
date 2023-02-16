@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { AppShell, useMantineTheme, Box } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 
-import Navbar from '../components/navbar';
 import Header from '../components/header';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState<boolean>(false);
-  const matches = useMediaQuery(`(min-width: ${theme.breakpoints.md}px)`);
 
   return (
     <AppShell
@@ -21,16 +17,10 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           display: 'flex',
         },
       }}
-      fixed={matches}
-      navbarOffsetBreakpoint="md"
-      asideOffsetBreakpoint="sm"
-      navbar={<Navbar opened={opened} />}
-      header={<Header opened={opened} setOpened={setOpened} />}
-      padding="md"
+      header={<Header />}
+      padding={0}
     >
-      <Box w="100%" component="div">
-        {children}
-      </Box>
+      {children}
     </AppShell>
   );
 }

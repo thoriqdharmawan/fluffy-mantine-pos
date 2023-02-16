@@ -1,33 +1,19 @@
 import { Navbar as Nav, NavLink } from '@mantine/core';
-import {
-  IconHome2,
-  IconCash,
-  IconBusinessplan,
-  IconReceiptRefund,
-  IconUsers,
-} from '@tabler/icons';
+import { IconHome2, IconCash, IconList, IconShoppingCart} from '@tabler/icons';
 import { useRouter } from 'next/router';
 
 import Link from 'next/link';
 
-interface NabarProps {
-  opened: boolean;
-}
+interface NabarProps {}
 
 const data = [
-  { icon: IconHome2, label: 'Dasbor', href: '/' },
-  {
-    icon: IconCash,
-    label: 'Pendapatan',
-    href: '/income',
-  },
-  { icon: IconBusinessplan, label: 'Daftar Produk', href: '/products' },
-  { icon: IconReceiptRefund, label: 'Riwayat Pesanan', href: '/orders-histories' },
-  { icon: IconUsers, label: 'Karyawan', href: '/employee' },
+  { icon: IconHome2, label: 'Home Page', href: '/' },
+  { icon: IconShoppingCart, label: 'Riwayat Pesanan', href: '/orders-histories' },
+  { icon: IconList, label: 'Daftar Produk', href: '/products' },
+  { icon: IconCash, label: 'Pendapatan', href: '/income' },
 ];
 
 export default function Navbar(props: NabarProps) {
-  const { opened } = props;
   const router = useRouter();
 
   const menus = data.map((item, index) => {
@@ -41,14 +27,13 @@ export default function Navbar(props: NabarProps) {
           label={item.label}
           icon={<item.icon size={16} stroke={1.5} />}
           my={4}
-          styles={{ root: { borderRadius: '5px' } }}
         />
       </Link>
     );
   });
 
   return (
-    <Nav p="md" hiddenBreakpoint="sm" hidden={!opened} width={{ sm: 200, lg: 300 }}>
+    <Nav>
       <Nav.Section grow>{menus}</Nav.Section>
       <Nav.Section>Last section</Nav.Section>
     </Nav>

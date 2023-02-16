@@ -1,7 +1,12 @@
 import { TextInput, TextInputProps, ActionIcon, useMantineTheme } from '@mantine/core';
 import { IconSearch, IconArrowRight, IconArrowLeft } from '@tabler/icons';
 
-const SearchBar = (props: TextInputProps) => {
+interface SearchBar extends TextInputProps {
+  placeholder: string;
+}
+
+const SearchBar = (props: SearchBar) => {
+  const { placeholder } = props;
   const theme = useMantineTheme();
 
   return (
@@ -18,11 +23,11 @@ const SearchBar = (props: TextInputProps) => {
           )}
         </ActionIcon>
       }
-      placeholder="Search questions"
+      placeholder={placeholder}
       rightSectionWidth={42}
       {...props}
     />
   );
-}
+};
 
-export default SearchBar
+export default SearchBar;
