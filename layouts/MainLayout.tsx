@@ -1,7 +1,7 @@
 import React from 'react';
-import { AppShell, useMantineTheme, Box } from '@mantine/core';
+import { AppShell, useMantineTheme} from '@mantine/core';
 
-import Header from '../components/header';
+import Navbar from '../components/navbar';
 
 export default function MainLayout({ children }: { children: React.ReactNode }) {
   const theme = useMantineTheme();
@@ -17,7 +17,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           display: 'flex',
         },
       }}
-      header={<Header />}
+      navbar={<Navbar />}
       padding={0}
     >
       {children}

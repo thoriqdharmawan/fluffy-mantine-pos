@@ -45,6 +45,36 @@ export const GET_LIST_PRODUCTS = gql`
     }
   }
 `;
+export const GET_LIST_PRODUCTS_MENUS = gql`
+  query GetListProductMenus($company_id: uuid!, $search: String) {
+    total: products_aggregate(
+      where: { company: { id: { _eq: $company_id } }, name: { _ilike: $search } }
+    ) {
+      aggregate {
+        count
+      }
+    }
+    products(where: { company: { id: { _eq: $company_id } }, name: { _ilike: $search } }) {
+      id
+      name
+      image
+      type
+      description
+      variants {
+        id
+        name
+        values
+      }
+      product_variants {
+        id
+        coord
+        is_primary
+        price
+        stock
+      }
+    }
+  }
+`;
 
 export const GET_PRODUCT_BY_ID = gql`
   query GetProductById($product_id: uuid!) {
