@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import NextApp, { AppProps, AppContext } from 'next/app';
 import { getCookie, setCookie } from 'cookies-next';
+import { CartProvider } from 'react-use-cart';
 import Head from 'next/head';
 
 import { MantineProvider, ColorScheme, ColorSchemeProvider } from '@mantine/core';
@@ -33,7 +34,9 @@ export default function App(props: AppProps & { colorScheme: ColorScheme }) {
             <ModalsProvider>
               <UserProvider>
                 <AuthStateChangeProvider>
-                  <Component {...pageProps} />
+                  <CartProvider>
+                    <Component {...pageProps} />
+                  </CartProvider>
                 </AuthStateChangeProvider>
               </UserProvider>
             </ModalsProvider>

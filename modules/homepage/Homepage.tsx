@@ -1,4 +1,4 @@
-import { Grid } from '@mantine/core';
+import { Box, Flex } from '@mantine/core';
 
 import Products from './products/Products';
 import Cart from './cart/Cart';
@@ -7,13 +7,12 @@ type Props = {};
 
 export default function Homepage({}: Props) {
   return (
-    <Grid w="100%">
-      <Grid.Col sm={12} md={9}>
-        <Products />
-      </Grid.Col>
-      <Grid.Col sm={12} md={3}>
+    <Flex justify="space-between" w="100%" direction={{base: 'column', md: 'row'}}>
+      <Products />
+
+      <Box maw={460} w="100%">
         <Cart />
-      </Grid.Col>
-    </Grid>
+      </Box>
+    </Flex>
   );
 }

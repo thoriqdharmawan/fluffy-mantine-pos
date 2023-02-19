@@ -9,4 +9,14 @@ const getInitials = (name: string) => {
   return initials;
 };
 
-export { getInitials };
+const idrFormatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+  minimumFractionDigits: 0,
+});
+
+function convertToRupiah(nominal: number) {
+  return idrFormatter.format(nominal);
+}
+
+export { getInitials, convertToRupiah };
