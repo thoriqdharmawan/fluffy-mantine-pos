@@ -46,7 +46,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
             </Stepper.Step>
           );
         })}
-        <Stepper.Completed>Completed, click back button to get to previous step</Stepper.Completed>
+        <Stepper.Completed><h1>Pembayaran Berhasil</h1></Stepper.Completed>
       </Stepper>
 
       <Group position="center" mt="xl">
