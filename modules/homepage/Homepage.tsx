@@ -10,7 +10,7 @@ export default function Homepage() {
     open: false,
     data: [],
   });
-  
+
   const handleNextPayment = (items: any) => {
     setDetail({
       open: true,
@@ -30,7 +30,7 @@ export default function Homepage() {
 
       <DetailModal
         open={detail.open}
-        onClose={() => setDetail((prev) => ({ ...prev, open: false, data: [] }))}
+        onClose={() => setDetail((prev) => ({ ...prev, open: false }))}
         data={detail.data}
       />
     </>

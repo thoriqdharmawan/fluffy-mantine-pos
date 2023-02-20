@@ -32,8 +32,8 @@ export default function DetailModal({ open, onClose, data }: Props) {
   ];
 
   const handleClose = () => {
-    setActive(0);
     onClose();
+    setActive(0);
   };
 
   return (
