@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Stepper, Button, Group, Modal } from '@mantine/core';
+
 import DetailOrders from './steps/DetailOrders';
+import CompletePayment from './steps/CompletePayment';
 
 type Props = {
   open: boolean;
@@ -46,7 +48,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
             </Stepper.Step>
           );
         })}
-        <Stepper.Completed><h1>Pembayaran Berhasil</h1></Stepper.Completed>
+        <Stepper.Completed><CompletePayment /></Stepper.Completed>
       </Stepper>
 
       <Group position="center" mt="xl">
