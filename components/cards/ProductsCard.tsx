@@ -57,7 +57,7 @@ export default function ProductsCard(props: ProductCard) {
       const pure = JSON.parse(JSON.stringify(selected), (key, value) => {
         return key === '__typename' ? undefined : value;
       });
-      onAddToCart({ ...pure, name, src, variants }, quantity);
+      onAddToCart({ ...pure, name, src, variants, type }, quantity);
       setQuantity(1);
     } else {
       console.log('ERROR');

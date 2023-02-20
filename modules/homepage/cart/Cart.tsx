@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Center, Paper, Title, Box, ScrollArea, Button, Flex, Text } from '@mantine/core';
+import { Paper, Title, Box, ScrollArea, Button, Flex } from '@mantine/core';
 import { useCart } from 'react-use-cart';
 
 import ProductItemCart from './ProductItemCart';
-import { convertToRupiah } from '../../../context/helpers';
+import { convertToRupiah, getVariants } from '../../../context/helpers';
+interface Props {
+  onNextToPayment: (allItems: any) => void;
+}
 
-export default function Cart() {
+export default function Cart(props: Props) {
+  const { onNextToPayment } = props;
   const { items, updateItemQuantity, removeItem, emptyCart } = useCart();
   const [allItems, setallItems] = useState([{}]);
 
@@ -13,7 +17,6 @@ export default function Cart() {
     setallItems(JSON.parse(JSON.stringify(items)));
   }, [items]);
 
-  // console.log(allItems);
   return (
     <Paper h="100vh" pos="sticky" top={0} shadow="md" radius={0} w="100%">
       <Flex h="100%" justify="space-beetwen" direction="column">
@@ -22,10 +25,13 @@ export default function Cart() {
             p="md"
             pos="sticky"
             top={0}
-            bg="#fff"
             justify="space-between"
             mb="lg"
-            sx={{ zIndex: 1, alignItems: 'center' }}
+            sx={(theme) => ({
+              zIndex: 1,
+              alignItems: 'center',
+              backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : '#fff',
+            })}
           >
             <Title order={3}>Pesanan #232</Title>
 
@@ -37,9 +43,8 @@ export default function Cart() {
           <Box px="md">
             {allItems?.map((item: any) => {
               const { variants, coord } = item;
-              const variant1 = variants?.[0]?.values?.[coord?.[0] || 0];
-              const variant2 = variants?.[1]?.values?.[coord?.[1] || 0];
-              const variant = [variant1, variant2].filter((v) => v);
+
+              const variant = getVariants(variants, coord);
 
               return (
                 <ProductItemCart
@@ -57,7 +62,7 @@ export default function Cart() {
             })}
           </Box>
         </ScrollArea>
-        <Button h="7%" w="100%" radius={0} m="auto">
+        <Button onClick={() => onNextToPayment(allItems)} h="7%" w="100%" radius={0} m="auto">
           Lanjut Ke Pembayaran
         </Button>
       </Flex>

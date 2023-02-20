@@ -19,4 +19,17 @@ function convertToRupiah(nominal: number) {
   return idrFormatter.format(nominal);
 }
 
-export { getInitials, convertToRupiah };
+interface Variants {
+  name?: string;
+  values: string[];
+}
+
+const getVariants = (variants: Variants[], coord: number[]) => {
+  const variant1 = variants?.[0]?.values?.[coord?.[0] || 0];
+  const variant2 = variants?.[1]?.values?.[coord?.[1] || 0];
+  const variant = [variant1, variant2].filter((v) => v);
+
+  return variant;
+};
+
+export { getInitials, convertToRupiah, getVariants };
