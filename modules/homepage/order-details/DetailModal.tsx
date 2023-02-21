@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Stepper, Button, Group, Modal } from '@mantine/core';
+
 import DetailOrders from './steps/DetailOrders';
+import CompletePayment from './steps/CompletePayment';
+import PaymentMethod from './steps/payment-method/PaymentMethod';
 
 type Props = {
   open: boolean;
@@ -22,7 +25,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
     {
       label: 'Metode Pembayaran',
       description: 'Pilih metode pembayaran',
-      components: <h1>Metode Pembayaran</h1>,
+      components: <PaymentMethod />,
     },
     {
       label: 'Bayar Pesanan',
@@ -46,7 +49,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
             </Stepper.Step>
           );
         })}
-        <Stepper.Completed><h1>Pembayaran Berhasil</h1></Stepper.Completed>
+        <Stepper.Completed><CompletePayment /></Stepper.Completed>
       </Stepper>
 
       <Group position="center" mt="xl">
