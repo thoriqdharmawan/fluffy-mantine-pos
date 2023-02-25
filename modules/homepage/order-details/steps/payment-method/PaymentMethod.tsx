@@ -3,7 +3,6 @@ import { Box, SimpleGrid, Paper, Text, TextInput, Select, NumberInput } from '@m
 import { IconBrandShopee, IconCashBanknote } from '@tabler/icons';
 
 import CheckboxCard from '../../../../../components/checkbox/CheckboxCard';
-import InputPayment from './InputPayment';
 
 export default function PaymentMethod() {
   const [checked, setChecked] = useState<string>('');
@@ -85,7 +84,6 @@ export default function PaymentMethod() {
             fieldName="kasir"
             title="Bayar di Kasir"
           />
-          {checked === 'kasir' && <InputPayment />}
         </div>
       </SimpleGrid>
     </Box>
