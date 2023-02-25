@@ -4,6 +4,7 @@ import { Stepper, Button, Group, Modal } from '@mantine/core';
 import DetailOrders from './steps/DetailOrders';
 import CompletePayment from './steps/CompletePayment';
 import PaymentMethod from './steps/payment-method/PaymentMethod';
+import PayNow from './steps/PayNow';
 
 type Props = {
   open: boolean;
@@ -13,6 +14,7 @@ type Props = {
 
 export default function DetailModal({ open, onClose, data }: Props) {
   const [active, setActive] = useState(0);
+  
   const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
 
@@ -30,7 +32,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
     {
       label: 'Bayar Pesanan',
       description: 'Pastikan pesanan sudah sesuai',
-      components: <h1>Bayar Pesanan</h1>,
+      components: <PayNow />,
     },
   ];
 
@@ -42,9 +44,9 @@ export default function DetailModal({ open, onClose, data }: Props) {
   return (
     <Modal size={940} opened={open} onClose={handleClose}>
       <Stepper active={active} breakpoint="sm">
-        {STEPS.map((step) => {
+        {STEPS.map((step, i) => {
           return (
-            <Stepper.Step label={step.label} description={step.description}>
+            <Stepper.Step key={i} label={step.label} description={step.description}>
               {step.components}
             </Stepper.Step>
           );

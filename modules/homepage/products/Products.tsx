@@ -34,22 +34,24 @@ export default function Products() {
         loading: true,
       }));
     }
-    getListProductsMenus({
-      fetchPolicy: 'network-only',
-      variables: {
-        company_id: companyId,
-        search: `%${debounce}%`,
-      },
-    })
-      .then(({ data }) => {
-        setProducts((prev: ProductInterface) => ({
-          ...prev,
-          data: data?.products,
-          total: data.total.aggregate.count,
-          loading: false,
-        }));
+    if (companyId) {
+      getListProductsMenus({
+        fetchPolicy: 'network-only',
+        variables: {
+          company_id: companyId,
+          search: `%${debounce}%`,
+        },
       })
-      .catch((err) => console.error(err.message));
+        .then(({ data }) => {
+          setProducts((prev: ProductInterface) => ({
+            ...prev,
+            data: data?.products,
+            total: data.total.aggregate.count,
+            loading: false,
+          }));
+        })
+        .catch((err) => console.error(err.message));
+    }
   };
 
   useEffect(() => {

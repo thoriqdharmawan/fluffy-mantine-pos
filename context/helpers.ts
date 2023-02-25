@@ -32,4 +32,26 @@ const getVariants = (variants: Variants[], coord: number[]) => {
   return variant;
 };
 
-export { getInitials, convertToRupiah, getVariants };
+const getNominals = (totalTagihan: number): number[] => {
+  const nominal = [5000, 10000, 20000, 50000, 100000];
+  let result = [totalTagihan];
+  let i = 0;
+
+  while (i < nominal.length && result.length < 3) {
+    const sisa = nominal[i] - (totalTagihan % nominal[i]);
+
+    if (sisa !== nominal[i] && !result.includes(totalTagihan + sisa)) {
+      result.push(totalTagihan + sisa);
+    }
+
+    i++;
+  }
+
+  if (result.length === 1) {
+    return result;
+  }
+
+  return result.slice(0, 3);
+};
+
+export { getInitials, convertToRupiah, getVariants, getNominals };
