@@ -22,8 +22,8 @@ export default function DetailOrders(props: Props) {
         <td>
           <Flex gap="sm">
             {isVariant ? (
-              variants?.map((variant) => (
-                <Badge sx={{ textTransform: 'capitalize' }}>{variant}</Badge>
+              variants?.map((variant, i) => (
+                <Badge key={i} sx={{ textTransform: 'capitalize' }}>{variant}</Badge>
               ))
             ) : (
               <Text fs="italic" color="dimmed">

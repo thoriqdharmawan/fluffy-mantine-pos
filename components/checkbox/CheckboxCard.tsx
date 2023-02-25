@@ -1,5 +1,4 @@
-import { UnstyledButton, Checkbox, Text, createStyles } from '@mantine/core';
-import { useUncontrolled } from '@mantine/hooks';
+import { UnstyledButton, Checkbox, Text, createStyles, ThemeIcon } from '@mantine/core';
 
 const useStyles = createStyles((theme) => ({
   button: {
@@ -19,39 +18,41 @@ const useStyles = createStyles((theme) => ({
 }));
 
 interface CheckboxCardProps {
-  checked?: boolean;
-  defaultChecked?: boolean;
-  onChange?(checked: boolean): void;
+  checked?: string;
+  onChange(fieldName: string): void;
   title: React.ReactNode;
-  description: React.ReactNode;
+  description?: React.ReactNode;
+  fieldName: string;
+  icon?: React.ReactNode;
+  mb?: string | number;
+  error?: boolean
 }
 
 export default function CheckboxCard({
   checked,
-  defaultChecked,
   onChange,
   title,
   description,
   className,
+  fieldName,
+  icon,
+  mb,
+  error,
   ...others
 }: CheckboxCardProps & Omit<React.ComponentPropsWithoutRef<'button'>, keyof CheckboxCardProps>) {
   const { classes, cx } = useStyles();
 
-  const [value, handleChange] = useUncontrolled({
-    value: checked,
-    defaultValue: defaultChecked,
-    finalValue: false,
-    onChange,
-  });
-
   return (
     <UnstyledButton
       {...others}
-      onClick={() => handleChange(!value)}
+      onClick={() => onChange(fieldName)}
       className={cx(classes.button, className)}
+      mb={mb || 'sm'}
+      sx={{borderColor: error ? 'red' : 'none'}}
     >
       <Checkbox
-        checked={value}
+        error={error}
+        checked={checked === fieldName || false}
         onChange={() => {}}
         tabIndex={-1}
         size="md"
@@ -59,13 +60,17 @@ export default function CheckboxCard({
         styles={{ input: { cursor: 'pointer' } }}
       />
 
+      <ThemeIcon variant="light" radius="md" mr="sm">
+        {icon}
+      </ThemeIcon>
+
       <div>
-        <Text weight={500} mb={7} sx={{ lineHeight: 1 }}>
-          {title}
-        </Text>
-        <Text size="sm" color="dimmed">
-          {description}
-        </Text>
+        <Text weight={500}>{title}</Text>
+        {description && (
+          <Text size="sm" mt="sm" color="dimmed">
+            {description}
+          </Text>
+        )}
       </div>
     </UnstyledButton>
   );
