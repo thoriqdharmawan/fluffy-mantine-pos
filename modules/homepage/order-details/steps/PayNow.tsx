@@ -2,10 +2,16 @@ import { useState } from 'react';
 import { Box, Text, Paper, NumberInput, Table } from '@mantine/core';
 
 import RecommendationCash from './payment-method/RecommendationCash';
+import { convertToRupiah } from '../../../../context/helpers';
 
-type Props = {};
+interface Props {
+  totalPayment: number;
+}
 
-export default function PayNow({}: Props) {
+
+export default function PayNow(props: Props) {
+  const {totalPayment} = props
+
   const [value, setValue] = useState(0);
 
   return (
@@ -16,7 +22,7 @@ export default function PayNow({}: Props) {
         </Text>
         <Paper mb="xl" p="xl" withBorder>
           <Text variant="gradient" ta="center" size="xl" fw="bold">
-            Rp 23.0000
+            {convertToRupiah(totalPayment)}
           </Text>
         </Paper>
 
@@ -37,7 +43,7 @@ export default function PayNow({}: Props) {
             !Number.isNaN(parseFloat(value)) ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''
           }
         />
-        <RecommendationCash onClick={setValue} total={23000} />
+        <RecommendationCash onClick={setValue} total={totalPayment} />
 
         <Table>
           <tbody>
