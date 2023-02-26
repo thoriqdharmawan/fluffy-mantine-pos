@@ -1,18 +1,28 @@
 import { useState } from 'react';
 import { Box, Text, Paper, NumberInput, Table } from '@mantine/core';
+import { UseFormReturnType } from '@mantine/form';
 
-import RecommendationCash from './payment-method/RecommendationCash';
 import { convertToRupiah } from '../../../../context/helpers';
+import { FormValues } from '../DetailModal';
+import RecommendationCash from './payment-method/RecommendationCash';
 
 interface Props {
   totalPayment: number;
+  form: UseFormReturnType<FormValues>;
+  error: boolean;
 }
 
-
 export default function PayNow(props: Props) {
-  const {totalPayment} = props
+  const { totalPayment, form, error } = props;
 
-  const [value, setValue] = useState(0);
+  const handleChangeAmount = (nominal: number) => {
+    form.setFieldValue('paymentAmount', nominal);
+  };
+
+  const isErrorNominal = error && !form.values.paymentAmount;
+  
+  const offset = (form.values.paymentAmount || 0) - totalPayment;
+
 
   return (
     <Box>
@@ -26,7 +36,6 @@ export default function PayNow(props: Props) {
           </Text>
         </Paper>
 
-
         <Text mb="sm">Masukan Nominal Pembayaran</Text>
         <NumberInput
           ta="center"
@@ -34,27 +43,43 @@ export default function PayNow(props: Props) {
           mb="sm"
           icon="Rp"
           min={0}
+          withAsterisk
           hideControls
-          value={value}
-          onChange={(value) => setValue(value || 0)}
           styles={{ input: { textAlign: 'center' } }}
           parser={(value: any) => value.replace(/\$\s?|(,*)/g, '')}
           formatter={(value: any) =>
             !Number.isNaN(parseFloat(value)) ? `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') : ''
           }
+          {...form.getInputProps('paymentAmount')}
+          error={isErrorNominal}
         />
-        <RecommendationCash onClick={setValue} total={totalPayment} />
+
+        {isErrorNominal && (
+          <Text color="red" size="sm" mb="lg">
+            Silahkan Masukan Nominal Pembayaran
+          </Text>
+        )}
+
+        <RecommendationCash onClick={handleChangeAmount} total={totalPayment} />
 
         <Table>
           <tbody>
-            <tr>
-              <td>Kembali</td>
-              <td align="right">+ Rp 12.000</td>
-            </tr>
-            <tr>
-              <td>Kurang</td>
-              <td align="right">- Rp 12.000</td>
-            </tr>
+            {offset > 0 && (
+              <tr>
+                <td>Kembali</td>
+                <td align="right">
+                  <Text color="green" size="md" fw="bold">+ {convertToRupiah(offset)}</Text>
+                </td>
+              </tr>
+            )}
+            {offset < 0 && (
+              <tr>
+                <td>Kurang</td>
+                <td align="right">
+                  <Text color="red" size="md" fw="bold">- {convertToRupiah(Math.abs(offset))}</Text>
+                </td>
+              </tr>
+            )}
           </tbody>
         </Table>
       </Box>

@@ -10,10 +10,11 @@ import CheckboxCard from '../../../../../components/checkbox/CheckboxCard';
 interface Props {
   totalPayment: number;
   form: UseFormReturnType<FormValues>;
+  error: boolean;
 }
 
 export default function PaymentMethod(props: Props) {
-  const { totalPayment, form } = props;
+  const { totalPayment, form, error } = props;
 
   const PAYMENTS = [
     {
@@ -48,6 +49,8 @@ export default function PaymentMethod(props: Props) {
   const handleChangePayment = (fieldName: string, type: string) => {
     form.setValues((prev) => ({ ...prev, paymentMethod: fieldName, paymentType: type }));
   };
+
+  const isErrorPaymentMethod = error && !form.values.paymentMethod;
 
   return (
     <Box p="md">
@@ -91,7 +94,7 @@ export default function PaymentMethod(props: Props) {
           />
           <TextInput
             label="Catatan"
-            placeholder="Tambahkan Catatan Untuk Pelanggan"
+            placeholder="Tambahkan Catatan Pelanggan"
             labelProps={{ mb: 8 }}
             mb="sm"
             {...form.getInputProps('customer.note')}
@@ -121,12 +124,18 @@ export default function PaymentMethod(props: Props) {
                       onChange={(fieldName) => handleChangePayment(fieldName, payment.type)}
                       fieldName={option.fieldName}
                       title={option.title}
+                      error={isErrorPaymentMethod}
                     />
                   );
                 })}
               </Box>
             );
           })}
+          {isErrorPaymentMethod && (
+            <Text color="red" size="sm">
+              Silahkan Pilih Metode Pembayaran
+            </Text>
+          )}
         </div>
       </SimpleGrid>
     </Box>
