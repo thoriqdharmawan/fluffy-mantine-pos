@@ -33,7 +33,7 @@ const getVariants = (variants: Variants[], coord: number[]) => {
 };
 
 const getNominals = (totalTagihan: number): number[] => {
-  const nominal = [5000, 10000, 20000, 50000, 100000];
+  const nominal = [10000, 20000, 50000, 100000];
   let result = [totalTagihan];
   let i = 0;
 

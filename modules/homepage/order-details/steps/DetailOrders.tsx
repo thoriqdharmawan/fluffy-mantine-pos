@@ -1,14 +1,14 @@
-import { useMemo } from 'react';
 import { Badge, Box, Flex, Text, Image, Table } from '@mantine/core';
 
 import { convertToRupiah, getVariants } from '../../../../context/helpers';
 
 interface Props {
   products: any[];
+  totalPayment: number;
 }
 
 export default function DetailOrders(props: Props) {
-  const { products } = props;
+  const { products, totalPayment } = props;
 
   const rows = products?.map((product) => {
     const variants = getVariants(product.variants, product.coord);
@@ -39,10 +39,6 @@ export default function DetailOrders(props: Props) {
     );
   });
 
-  const totalPayment = useMemo(() => {
-    return products.reduce((acc, cur) => acc + cur.itemTotal, 0);
-  }, [products]);
-
   return (
     <Box p="md">
       <Text color="dimmed" mb="xl" maw="70%">
@@ -65,8 +61,8 @@ export default function DetailOrders(props: Props) {
           {rows}
           <tr>
             <td colSpan={5}>
-              <Text py="md" fw={700}>
-                Total Pembayaran
+              <Text py="md" ta="right" fw={700}>
+                Subtotal
               </Text>
             </td>
             <td>

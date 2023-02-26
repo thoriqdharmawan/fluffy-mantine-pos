@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Stepper, Button, Group, Modal } from '@mantine/core';
+import { useMemo, useState } from 'react';
+import { Stepper, Button, Flex, Modal } from '@mantine/core';
+import { useForm } from '@mantine/form';
 
 import DetailOrders from './steps/DetailOrders';
 import CompletePayment from './steps/CompletePayment';
@@ -12,33 +13,105 @@ type Props = {
   data: any[];
 };
 
+interface Customer {
+  name: string;
+  phone: string;
+  address: string;
+  note: string;
+}
+
+export interface FormValues {
+  paymentAmount: number;
+  paymentType: string | undefined;
+  paymentMethod: string | undefined;
+  discount: number;
+  discountType: string;
+  customer: Customer;
+}
+
+const getNextLabel = (active: number) => {
+  switch (active) {
+    case 0:
+      return 'Lanjut ke Metode Pembayaran';
+    case 1:
+      return 'Lanjut ke Pembayaran';
+    case 2:
+      return 'Buat Pesanan';
+    default:
+      return 'Selanjutnya';
+  }
+};
+
 export default function DetailModal({ open, onClose, data }: Props) {
   const [active, setActive] = useState(0);
-  
-  const nextStep = () => setActive((current) => (current < 3 ? current + 1 : current));
+  const [error, setError] = useState(false);
+
+  const form = useForm<FormValues>({
+    initialValues: {
+      paymentAmount: 0,
+      paymentType: undefined,
+      paymentMethod: undefined,
+      discount: 0,
+      discountType: '',
+      customer: {
+        name: 'GUEST',
+        phone: '',
+        address: '',
+        note: '',
+      },
+    },
+  });
+
+  const makeError = () => {
+    setError(true);
+    setTimeout(() => {
+      setError(false);
+    }, 5000);
+  };
+
+  const nextStep = () => {
+    if (active === 1 && !form.values.paymentMethod) {
+      makeError();
+      return;
+    }
+
+    if (active === 2 && !form.values.paymentAmount) {
+      makeError();
+      return;
+    }
+
+    setError(false);
+    setActive((current) => (current < 3 ? current + 1 : current));
+  };
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
+
+  const totalPayment = useMemo(() => {
+    return data.reduce((acc, cur) => acc + cur.itemTotal, 0);
+  }, [data]);
 
   const STEPS = [
     {
       label: 'Detail Pesanan',
       description: 'Pesanan yang akan dibuat',
-      components: <DetailOrders products={data} />,
+      components: <DetailOrders products={data} totalPayment={totalPayment} />,
     },
     {
       label: 'Metode Pembayaran',
       description: 'Pilih metode pembayaran',
-      components: <PaymentMethod />,
+      components: <PaymentMethod totalPayment={totalPayment} form={form} error={error} />,
     },
     {
       label: 'Bayar Pesanan',
       description: 'Pastikan pesanan sudah sesuai',
-      components: <PayNow />,
+      components: <PayNow totalPayment={totalPayment} form={form} error={error} />,
     },
   ];
 
   const handleClose = () => {
     onClose();
     setActive(0);
+    form.reset();
+    setError(false);
   };
 
   return (
@@ -51,15 +124,17 @@ export default function DetailModal({ open, onClose, data }: Props) {
             </Stepper.Step>
           );
         })}
-        <Stepper.Completed><CompletePayment /></Stepper.Completed>
+        <Stepper.Completed>
+          <CompletePayment />
+        </Stepper.Completed>
       </Stepper>
 
-      <Group position="center" mt="xl">
+      <Flex hidden={active === 3} justify="space-between" align="center" mt="xl">
         <Button variant="default" onClick={prevStep}>
-          Back
+          Kembali
         </Button>
-        <Button onClick={nextStep}>Next step</Button>
-      </Group>
+        <Button onClick={nextStep}>{getNextLabel(active)}</Button>
+      </Flex>
     </Modal>
   );
 }
