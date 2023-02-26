@@ -1,62 +1,60 @@
-import { Table, Button, Paper, Pagination, Group, Badge, ActionIcon } from '@mantine/core';
+import { useState, useEffect } from 'react';
+import { Table, Paper, Pagination, Group, Badge, ActionIcon } from '@mantine/core';
 import { IconEye } from '@tabler/icons';
+
+import { getListTransactions } from '../../../services/transactions';
+import { convertToRupiah } from '../../../context/helpers';
 
 interface TableOrderHistoriesProps {}
 
-const data = [
-  {
-    orderId: 1,
-    customerName: 'Amel',
-    dateAdded: '10 Januari 2020',
-    totalAmount: 34000,
-    cashier: 'Maruf',
-    status: 'COMPLETE',
-  },
-  {
-    orderId: 2,
-    customerName: 'Mayang',
-    dateAdded: '10 Januari 2020',
-    totalAmount: 34200,
-    cashier: 'Maruf',
-    status: 'COMPLETE',
-  },
-  {
-    orderId: 3,
-    customerName: 'Farhan',
-    dateAdded: '10 Januari 2020',
-    totalAmount: 1000,
-    cashier: 'Maruf',
-    status: 'COMPLETE',
-  },
-  {
-    orderId: 4,
-    customerName: 'Tamu',
-    dateAdded: '10 Januari 2020',
-    totalAmount: 53000,
-    cashier: 'Maruf',
-    status: 'COMPLETE',
-  },
-  {
-    orderId: 4,
-    customerName: 'Tamu',
-    dateAdded: '11 Januari 2020',
-    totalAmount: 85400,
-    cashier: 'Maruf',
-    status: 'COMPLETE',
-  },
-];
+interface Data {
+  data?: any[] | undefined;
+  total: number;
+  loading: boolean;
+}
 
 export function ListTransactions({}: TableOrderHistoriesProps) {
-  const rows = data.map((row) => {
+  const [data, setData] = useState<Data>({
+    data: [],
+    total: 0,
+    loading: false,
+  });
+
+  const getData = (withLoading: boolean) => {
+    if (withLoading) {
+      setData((prev) => ({
+        ...prev,
+        loading: true,
+      }));
+    }
+    getListTransactions({
+      fetchPolicy: 'network-only',
+    })
+      .then(({ data }) => {
+        setData((prev) => ({
+          ...prev,
+          data: data?.transactions,
+          total: data.total.aggregate.count,
+          loading: false,
+        }));
+      })
+      .catch((err) => console.error(err.message));
+  };
+
+  useEffect(() => {
+    getData(false);
+  }, []);
+
+  const rows = data.data?.map((row) => {
     return (
-      <tr key={row.orderId}>
-        <td>{row.orderId}</td>
-        <td>{row.dateAdded}</td>
-        <td>{row.customerName}</td>
-        <td>{row.totalAmount}</td>
-        <td>{row.cashier}</td>
+      <tr key={row.id}>
+        <td>{row.code || '-'}</td>
+        <td>{row.transaction_date}</td>
+        <td>{row.cusotmer?.name}</td>
+        <td>{convertToRupiah(row.total_amount)}</td>
+        <td>{row.employee?.name}</td>
         <td>
-          <Badge color="green">{row.status}</Badge>
+          <Badge color="green">{row.status || 'Selesai'}</Badge>
         </td>
         <td>
           <ActionIcon variant="light" color="primary">
@@ -75,7 +73,7 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
             <th>Nomor Pesanan</th>
             <th>Waktu Pemesanan</th>
             <th>Nama Custormer</th>
-            <th>Harga</th>
+            <th>Total Pesanan</th>
             <th>Kasir</th>
             <th>Status</th>
             <th>Aksi</th>
@@ -84,7 +82,7 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
         <tbody>{rows}</tbody>
       </Table>
       <Group mt={24} mb={12}>
-        <Pagination ml="auto" total={10} />
+        <Pagination ml="auto" total={data.total} />
       </Group>
     </Paper>
   );
