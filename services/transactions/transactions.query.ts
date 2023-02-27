@@ -1,5 +1,5 @@
 import { FetchPolicy } from '@apollo/client';
-import { GET_LIST_TRANSACTIONS } from './transactions.graphql';
+import { GET_LIST_TRANSACTIONS, GET_TOTAL_TRANSACTIONS_TODAY } from './transactions.graphql';
 
 import client from '../../apollo-client';
 
@@ -18,4 +18,14 @@ const getListTransactions = async (props: TransacitonsInterface) => {
   return result;
 };
 
-export { getListTransactions };
+const getTotalTransactionsToday = async (props: TransacitonsInterface) => {
+  const result = await client.query({
+    query: GET_TOTAL_TRANSACTIONS_TODAY,
+    variables: props.variables,
+    fetchPolicy: props.fetchPolicy,
+  });
+
+  return result;
+};
+
+export { getListTransactions, getTotalTransactionsToday };

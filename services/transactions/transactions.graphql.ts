@@ -25,6 +25,15 @@ export const GET_LIST_TRANSACTIONS = gql`
     }
   }
 `;
+export const GET_TOTAL_TRANSACTIONS_TODAY = gql`
+  query GetTotalTransactionToday($gte: timestamptz, $lte: timestamptz) {
+    total: transactions_aggregate(where: { transaction_date: { _gte: $gte, _lte: $lte } }) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
 
 export const ADD_TRANSACTION = gql`
   mutation AddTransactions(
@@ -33,6 +42,7 @@ export const ADD_TRANSACTION = gql`
     $tax: numeric
     $total_amount: numeric
     $code: String
+    $transaction_date: timestamptz
     $payment_method: String
     $payment_type: String
     $status: String
@@ -47,6 +57,7 @@ export const ADD_TRANSACTION = gql`
         tax: $tax
         total_amount: $total_amount
         code: $code
+        transaction_date: $transaction_date
         payment_method: $payment_method
         payment_type: $payment_type
         status: $status
