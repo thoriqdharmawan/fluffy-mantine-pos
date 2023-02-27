@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, SimpleGrid, Paper, Text, TextInput, Select, NumberInput } from '@mantine/core';
 import { IconBrandShopee, IconCashBanknote } from '@tabler/icons';
 import { UseFormReturnType } from '@mantine/form';
@@ -6,6 +6,7 @@ import { UseFormReturnType } from '@mantine/form';
 import { FormValues } from '../../DetailModal';
 import { convertToRupiah } from '../../../../../context/helpers';
 import CheckboxCard from '../../../../../components/checkbox/CheckboxCard';
+import { getListCustomers } from '../../../../../services/customers';
 
 interface Props {
   totalPayment: number;
@@ -13,8 +14,19 @@ interface Props {
   error: boolean;
 }
 
+interface CustomerState {
+  data: any[];
+  total: number;
+  loading: boolean;
+}
+
 export default function PaymentMethod(props: Props) {
   const { totalPayment, form, error } = props;
+  const [customers, setCustomers] = useState<CustomerState>({
+    data: [],
+    total: 0,
+    loading: false,
+  });
 
   const PAYMENTS = [
     {
@@ -46,11 +58,55 @@ export default function PaymentMethod(props: Props) {
     },
   ];
 
+  const getData = (withLoading?: boolean) => {
+    if (withLoading) {
+      setCustomers((prev: CustomerState) => ({
+        ...prev,
+        loading: true,
+      }));
+    }
+    getListCustomers({
+      fetchPolicy: 'network-only',
+    })
+      .then(({ data }: any) => {
+        setCustomers((prev: CustomerState) => ({
+          ...prev,
+          data: data?.customers,
+          total: data.total.aggregate.count,
+          loading: false,
+        }));
+      })
+      .catch((err) => console.error(err.message));
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
   const handleChangePayment = (fieldName: string, type: string) => {
     form.setValues((prev) => ({ ...prev, paymentMethod: fieldName, paymentType: type }));
   };
 
   const isErrorPaymentMethod = error && !form.values.paymentMethod;
+
+  const handleChangeCustomer = (value: string) => {
+    if (value !== '0') {
+      const _customers = customers.data.find((cus) => cus.id === Number(value));
+
+      form.setFieldValue('customer', {
+        name: value,
+        phone: Number(_customers?.phone),
+        address: _customers?.address || '',
+        note: _customers?.note || '',
+      });
+    } else {
+      form.setFieldValue('customer', {
+        name: value,
+        phone: undefined,
+        address: '',
+        note: '',
+      });
+    }
+  };
 
   return (
     <Box p="md">
@@ -65,12 +121,11 @@ export default function PaymentMethod(props: Props) {
             labelProps={{ mb: 8 }}
             mb="sm"
             data={[
-              { value: 'GUEST', label: 'Umum' },
-              { value: 'Amel', label: 'Amel' },
-              { value: 'svelte', label: 'Jaenal Anwar' },
-              { value: 'vue', label: 'Masud' },
+              { value: '0', label: 'Umum' },
+              ...customers.data?.map((customer) => ({ value: `${customer.id}`, label: customer.name })),
             ]}
             {...form.getInputProps('customer.name')}
+            onChange={handleChangeCustomer}
           />
           <NumberInput
             label="Nomor HP"

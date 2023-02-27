@@ -79,7 +79,9 @@ export default function Products() {
                   productVariants={product.product_variants}
                   variants={product.variants}
                   type={product.type}
-                  onAddToCart={(product, qty) => addItem(product, qty)}
+                  onAddToCart={(productVariant, qty) =>
+                    addItem({ ...productVariant, productId: product.id }, qty)
+                  }
                 />
               </Grid.Col>
             );

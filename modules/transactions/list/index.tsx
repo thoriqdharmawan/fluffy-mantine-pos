@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Table, Paper, Pagination, Group, Badge, ActionIcon } from '@mantine/core';
+import { Table, Paper, Pagination, Group, Badge, ActionIcon, Text } from '@mantine/core';
 import { IconEye } from '@tabler/icons';
 
 import { getListTransactions } from '../../../services/transactions';
@@ -45,16 +45,22 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
     getData(false);
   }, []);
 
-  const rows = data.data?.map((row) => {
+  const rows = data.data?.map((row: any) => {
     return (
       <tr key={row.id}>
         <td>{row.code || '-'}</td>
         <td>{row.transaction_date}</td>
-        <td>{row.cusotmer?.name}</td>
+        <td>
+          {row.customer?.name || (
+            <Text fs="italic" color="dimmed">
+              Tamu
+            </Text>
+          )}
+        </td>
         <td>{convertToRupiah(row.total_amount)}</td>
         <td>{row.employee?.name}</td>
         <td>
-          <Badge color="green">{row.status || 'Selesai'}</Badge>
+          <Badge color="green">{STATUS[row.status] || 'Selesai'}</Badge>
         </td>
         <td>
           <ActionIcon variant="light" color="primary">
@@ -87,3 +93,7 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
     </Paper>
   );
 }
+
+const STATUS: any = {
+  COMPLETED: 'Selesai',
+};
