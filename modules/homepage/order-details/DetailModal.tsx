@@ -6,6 +6,11 @@ import DetailOrders from './steps/DetailOrders';
 import CompletePayment from './steps/CompletePayment';
 import PaymentMethod from './steps/payment-method/PaymentMethod';
 import PayNow from './steps/PayNow';
+import { addTransaction } from '../../../services/transactions';
+import { getVariants } from '../../../context/helpers';
+import { showNotification } from '@mantine/notifications';
+import { IconCheck, IconExclamationMark } from '@tabler/icons';
+import { useCart } from 'react-use-cart';
 
 type Props = {
   open: boolean;
@@ -15,7 +20,7 @@ type Props = {
 
 interface Customer {
   name: string;
-  phone: string;
+  phone: string | number | undefined;
   address: string;
   note: string;
 }
@@ -43,6 +48,7 @@ const getNextLabel = (active: number) => {
 };
 
 export default function DetailModal({ open, onClose, data }: Props) {
+  const { emptyCart } = useCart();
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
 
@@ -54,7 +60,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
       discount: 0,
       discountType: '',
       customer: {
-        name: 'GUEST',
+        name: '0',
         phone: '',
         address: '',
         note: '',
@@ -69,6 +75,72 @@ export default function DetailModal({ open, onClose, data }: Props) {
     }, 5000);
   };
 
+  const handleClose = () => {
+    onClose();
+    setActive(0);
+    form.reset();
+    setError(false);
+  };
+
+  const totalPayment = useMemo(() => {
+    return data.reduce((acc, cur) => acc + cur.itemTotal, 0);
+  }, [data]);
+
+  const handleCreateTransaction = () => {
+    const { values } = form;
+
+    const variables = {
+      customerId: Number(values.customer.name) || null,
+      payment_amount: values.paymentAmount,
+      total_amount: totalPayment,
+      code: '',
+      tax: 0,
+      tax_type: 'PERCENT',
+      payment_method: values.paymentMethod,
+      payment_type: values.paymentType,
+      status: 'COMPLETED',
+      // ! hardcoded
+      employeeId: 'ce879f7a-5190-48f2-9462-24acdd275d20',
+      // merchantId: null,
+      products_solds: data?.map((product) => {
+        const variants = getVariants(product.variants, product.coord);
+
+        return {
+          name: product.name,
+          productId: product.productId,
+          quantity_sold: product.quantity,
+          unit_price: product.price,
+          total_price: product.quantity * product.price,
+          // transactionId: product.
+          variants,
+        };
+      }),
+    };
+
+    addTransaction({
+      variables: variables,
+    })
+      .then(() => {
+        emptyCart();
+        showNotification({
+          title: 'Yeayy, Sukses!! 😊',
+          message: 'Pesanan Berhasil Dibuat',
+          icon: <IconCheck />,
+          color: 'green',
+        });
+
+        setActive((current) => (current < 3 ? current + 1 : current));
+      })
+      .catch(() => {
+        showNotification({
+          title: 'Pesanan Gagal Dibuat',
+          message: 'Coba Lagi nanti',
+          icon: <IconExclamationMark />,
+          color: 'red',
+        });
+      });
+  };
+
   const nextStep = () => {
     if (active === 1 && !form.values.paymentMethod) {
       makeError();
@@ -81,13 +153,14 @@ export default function DetailModal({ open, onClose, data }: Props) {
     }
 
     setError(false);
-    setActive((current) => (current < 3 ? current + 1 : current));
+
+    if (active === 2) {
+      handleCreateTransaction();
+    } else {
+      setActive((current) => (current < 3 ? current + 1 : current));
+    }
   };
   const prevStep = () => setActive((current) => (current > 0 ? current - 1 : current));
-
-  const totalPayment = useMemo(() => {
-    return data.reduce((acc, cur) => acc + cur.itemTotal, 0);
-  }, [data]);
 
   const STEPS = [
     {
@@ -107,13 +180,6 @@ export default function DetailModal({ open, onClose, data }: Props) {
     },
   ];
 
-  const handleClose = () => {
-    onClose();
-    setActive(0);
-    form.reset();
-    setError(false);
-  };
-
   return (
     <Modal size={940} opened={open} onClose={handleClose}>
       <Stepper active={active} breakpoint="sm">
@@ -125,7 +191,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
           );
         })}
         <Stepper.Completed>
-          <CompletePayment />
+          <CompletePayment onClose={handleClose} />
         </Stepper.Completed>
       </Stepper>
 

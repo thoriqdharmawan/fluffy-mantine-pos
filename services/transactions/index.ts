@@ -1,3 +1,3 @@
-// export * from './transactions.mutation';
+export * from './transactions.mutation';
 export * from './transactions.query';
-// export * from './transactions.graphql';
+export * from './transactions.graphql';
