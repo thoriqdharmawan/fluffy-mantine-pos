@@ -1,6 +1,10 @@
 import { useMemo, useState } from 'react';
 import { Stepper, Button, Flex, Modal } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
+import { IconCheck, IconExclamationMark } from '@tabler/icons';
+import { useCart } from 'react-use-cart';
+import dayjs from 'dayjs';
 
 import DetailOrders from './steps/DetailOrders';
 import CompletePayment from './steps/CompletePayment';
@@ -8,14 +12,12 @@ import PaymentMethod from './steps/payment-method/PaymentMethod';
 import PayNow from './steps/PayNow';
 import { addTransaction } from '../../../services/transactions';
 import { getVariants } from '../../../context/helpers';
-import { showNotification } from '@mantine/notifications';
-import { IconCheck, IconExclamationMark } from '@tabler/icons';
-import { useCart } from 'react-use-cart';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   data: any[];
+  refetchTotalTransaction: () => void;
 };
 
 interface Customer {
@@ -47,7 +49,8 @@ const getNextLabel = (active: number) => {
   }
 };
 
-export default function DetailModal({ open, onClose, data }: Props) {
+export default function DetailModal(props: Props) {
+  const { open, onClose, data, refetchTotalTransaction } = props;
   const { emptyCart } = useCart();
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
@@ -95,6 +98,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
       total_amount: totalPayment,
       code: '',
       tax: 0,
+      transaction_date: dayjs().format('YYYY-MM-DDTHH:mm:ss'),
       tax_type: 'PERCENT',
       payment_method: values.paymentMethod,
       payment_type: values.paymentType,
@@ -128,7 +132,7 @@ export default function DetailModal({ open, onClose, data }: Props) {
           icon: <IconCheck />,
           color: 'green',
         });
-
+        refetchTotalTransaction();
         setActive((current) => (current < 3 ? current + 1 : current));
       })
       .catch(() => {
