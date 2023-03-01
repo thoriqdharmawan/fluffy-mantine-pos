@@ -1,14 +1,17 @@
 import { gql } from '@apollo/client';
 
 export const GET_LIST_TRANSACTIONS = gql`
-  query GetListTransactions {
+  query GetListTransactions ($limit: Int) {
     total: transactions_aggregate {
       aggregate {
         count
       }
     }
 
-    transactions {
+    transactions (
+      limit: $limit 
+      order_by: {transaction_date: desc}
+    ) {
       id
       code
       transaction_date

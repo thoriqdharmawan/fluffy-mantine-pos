@@ -3,6 +3,7 @@ import NextApp, { AppProps, AppContext } from 'next/app';
 import { getCookie, setCookie } from 'cookies-next';
 import { CartProvider } from 'react-use-cart';
 import Head from 'next/head';
+import dayjs from 'dayjs';
 
 import { MantineProvider, ColorScheme, ColorSchemeProvider } from '@mantine/core';
 import { NotificationsProvider } from '@mantine/notifications';
@@ -10,10 +11,16 @@ import { ModalsProvider } from '@mantine/modals';
 
 import AuthStateChangeProvider from '../context/auth';
 import { UserProvider } from '../context/user';
+
+require('dayjs/locale/id')
+
+const localizedFormat = require('dayjs/plugin/localizedFormat')
+
 export default function App(props: AppProps & { colorScheme: ColorScheme }) {
   const { Component, pageProps } = props;
   const [colorScheme, setColorScheme] = useState<ColorScheme>(props.colorScheme);
 
+  dayjs.extend(localizedFormat).locale("id")
   const toggleColorScheme = (value?: ColorScheme) => {
     const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(nextColorScheme);
