@@ -8,16 +8,6 @@ interface TransacitonsInterface {
   fetchPolicy?: FetchPolicy;
 }
 
-const getListTransactions = async (props: TransacitonsInterface) => {
-  const result = await client.query({
-    query: GET_LIST_TRANSACTIONS,
-    variables: props.variables,
-    fetchPolicy: props.fetchPolicy,
-  });
-
-  return result;
-};
-
 const getTotalTransactionsToday = async (props: TransacitonsInterface) => {
   const result = await client.query({
     query: GET_TOTAL_TRANSACTIONS_TODAY,
@@ -28,4 +18,4 @@ const getTotalTransactionsToday = async (props: TransacitonsInterface) => {
   return result;
 };
 
-export { getListTransactions, getTotalTransactionsToday };
+export { getTotalTransactionsToday };

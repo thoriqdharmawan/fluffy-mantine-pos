@@ -1,55 +1,30 @@
 import { useState, useEffect } from 'react';
 import { Table, Paper, Pagination, Group, Badge, ActionIcon, Text } from '@mantine/core';
 import { IconEye } from '@tabler/icons';
+import dayjs from 'dayjs';
 
-import { getListTransactions } from '../../../services/transactions';
+import { GET_LIST_TRANSACTIONS } from '../../../services/transactions';
 import { convertToRupiah } from '../../../context/helpers';
+import { useQuery } from '@apollo/client';
+import client from '../../../apollo-client';
 
-interface TableOrderHistoriesProps {}
-
-interface Data {
-  data?: any[] | undefined;
-  total: number;
-  loading: boolean;
+interface TableOrderHistoriesProps {
+  onClick: (id: string) => void;
 }
 
-export function ListTransactions({}: TableOrderHistoriesProps) {
-  const [data, setData] = useState<Data>({
-    data: [],
-    total: 0,
-    loading: false,
+export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
+  const { data } = useQuery(GET_LIST_TRANSACTIONS, {
+    client: client,
+    variables: {
+      limit: 5,
+    },
   });
 
-  const getData = (withLoading: boolean) => {
-    if (withLoading) {
-      setData((prev) => ({
-        ...prev,
-        loading: true,
-      }));
-    }
-    getListTransactions({
-      fetchPolicy: 'network-only',
-    })
-      .then(({ data }) => {
-        setData((prev) => ({
-          ...prev,
-          data: data?.transactions,
-          total: data.total.aggregate.count,
-          loading: false,
-        }));
-      })
-      .catch((err) => console.error(err.message));
-  };
-
-  useEffect(() => {
-    getData(false);
-  }, []);
-
-  const rows = data.data?.map((row: any) => {
+  const rows = data?.transactions?.map((row: any) => {
     return (
       <tr key={row.id}>
         <td>{row.code || '-'}</td>
-        <td>{row.transaction_date}</td>
+        <td>{dayjs(row.transaction_date).add(1, 'month').format('LLLL')}</td>
         <td>
           {row.customer?.name || (
             <Text fs="italic" color="dimmed">
@@ -63,7 +38,7 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
           <Badge color="green">{STATUS[row.status] || 'Selesai'}</Badge>
         </td>
         <td>
-          <ActionIcon variant="light" color="primary">
+          <ActionIcon onClick={() => onClick(row.id)} variant="light" color="primary">
             <IconEye size={16} />
           </ActionIcon>
         </td>
@@ -88,7 +63,7 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
         <tbody>{rows}</tbody>
       </Table>
       <Group mt={24} mb={12}>
-        <Pagination ml="auto" total={data.total} />
+        <Pagination ml="auto" total={data?.total.aggregate.count || 0} />
       </Group>
     </Paper>
   );

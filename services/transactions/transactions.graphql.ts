@@ -1,14 +1,14 @@
 import { gql } from '@apollo/client';
 
 export const GET_LIST_TRANSACTIONS = gql`
-  query GetListTransactions {
+  query GetListTransactions($limit: Int) {
     total: transactions_aggregate {
       aggregate {
         count
       }
     }
 
-    transactions {
+    transactions(limit: $limit, order_by: { transaction_date: desc }) {
       id
       code
       transaction_date
@@ -25,6 +25,40 @@ export const GET_LIST_TRANSACTIONS = gql`
     }
   }
 `;
+
+export const GET_DETAIL_TRANSACTION = gql`
+  query GetListTransactions($id: uuid!) {
+    transactions(where: { id: { _eq: $id } }) {
+      id
+      code
+      transaction_date
+      total_amount
+      payment_amount
+      payment_method
+      payment_type
+      status
+      tax
+      tax_type
+      products_solds {
+        id
+        name
+        quantity_sold
+        total_price
+        unit_price
+        variants
+      }
+      employee {
+        id
+        name
+      }
+      customer {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export const GET_TOTAL_TRANSACTIONS_TODAY = gql`
   query GetTotalTransactionToday($gte: timestamptz, $lte: timestamptz) {
     total: transactions_aggregate(where: { transaction_date: { _gte: $gte, _lte: $lte } }) {

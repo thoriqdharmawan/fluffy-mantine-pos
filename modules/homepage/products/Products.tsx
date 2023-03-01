@@ -9,6 +9,7 @@ import { useUser } from '../../../context/user';
 import ProductsCard from '../../../components/cards/ProductsCard';
 import SearchBar from '../../../components/SearchBar';
 import { convertToRupiah } from '../../../context/helpers';
+// import ProductCardV2 from '../../../components/cards/ProductCardV2';
 
 interface ProductInterface {
   data: any[];
@@ -68,6 +69,19 @@ export default function Products() {
       >
         <SearchBar onChange={(e) => setSearch(e.target.value)} mb="lg" placeholder="Cari Produk" />
         <Grid>
+          {/* {products?.data?.map((product) => {
+            return (
+              <Grid.Col key={product.id} sm={6} lg={4} xl={3}>
+                <ProductCardV2
+                  key={product.id}
+                  src={product.image}
+                  name={product.name}
+                  price={convertToRupiah(product?.product_variants?.[0].price)}
+                  onClick={handleClickProduct}
+                />
+              </Grid.Col>
+            );
+          })} */}
           {products.data.map((product) => {
             return (
               <Grid.Col key={product.id} sm={6} xl={4}>
