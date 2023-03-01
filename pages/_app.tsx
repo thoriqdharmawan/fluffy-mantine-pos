@@ -12,6 +12,8 @@ import { ModalsProvider } from '@mantine/modals';
 import AuthStateChangeProvider from '../context/auth';
 import { UserProvider } from '../context/user';
 
+import 'react-loading-skeleton/dist/skeleton.css'
+
 require('dayjs/locale/id')
 
 const localizedFormat = require('dayjs/plugin/localizedFormat')

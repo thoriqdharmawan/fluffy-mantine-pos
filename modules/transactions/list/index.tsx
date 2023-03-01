@@ -3,14 +3,16 @@ import { Table, Paper, Pagination, Group, Badge, ActionIcon, Text } from '@manti
 import { IconEye } from '@tabler/icons';
 import dayjs from 'dayjs';
 
-import { GET_LIST_TRANSACTIONS, getListTransactions } from '../../../services/transactions';
+import { GET_LIST_TRANSACTIONS } from '../../../services/transactions';
 import { convertToRupiah } from '../../../context/helpers';
 import { useQuery } from '@apollo/client';
 import client from '../../../apollo-client';
 
-interface TableOrderHistoriesProps {}
+interface TableOrderHistoriesProps {
+  onClick: (id: string) => void;
+}
 
-export function ListTransactions({}: TableOrderHistoriesProps) {
+export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
   const { data } = useQuery(GET_LIST_TRANSACTIONS, {
     client: client,
     variables: {
@@ -36,7 +38,7 @@ export function ListTransactions({}: TableOrderHistoriesProps) {
           <Badge color="green">{STATUS[row.status] || 'Selesai'}</Badge>
         </td>
         <td>
-          <ActionIcon variant="light" color="primary">
+          <ActionIcon onClick={() => onClick(row.id)} variant="light" color="primary">
             <IconEye size={16} />
           </ActionIcon>
         </td>
