@@ -1,12 +1,14 @@
 import { useMemo } from 'react';
 import { useQuery } from '@apollo/client';
 import { Box, Modal, SimpleGrid, Table, Text } from '@mantine/core';
+import dayjs from 'dayjs';
 // @ts-ignore
 import Skeleton from 'react-loading-skeleton';
 
 import { GET_DETAIL_TRANSACTION } from '../../../services/transactions';
 import client from '../../../apollo-client';
 import { convertToRupiah } from '../../../context/helpers';
+import { GLOBAL_FORMAT_DATE } from '../../../context/global';
 
 interface Props {
   id: string;
@@ -55,7 +57,10 @@ export default function DetailTransaction(props: Props) {
           <SimpleGrid mb="xl" cols={2}>
             <List label="Nomor Transaksi" value={code || '-'} />
             <List label="Kasir" value={employee?.name} />
-            <List label="Waktu Transaksi" value={transaction_date} />
+            <List
+              label="Waktu Transaksi"
+              value={dayjs(transaction_date).format(GLOBAL_FORMAT_DATE)}
+            />
             <List label="Metode Pembayaran" value={`${payment_type} - ${payment_method}`} />
             <List label="Status" value={status} />
           </SimpleGrid>

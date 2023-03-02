@@ -10,6 +10,7 @@ import client from '../../apollo-client';
 import Products from './products/Products';
 import Cart from './cart/Cart';
 import DetailModal from './order-details/DetailModal';
+
 export default function Homepage() {
   const [detail, setDetail] = useState({
     open: false,

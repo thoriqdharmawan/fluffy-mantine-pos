@@ -1,4 +1,4 @@
-import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
+import { Card, Image, Text } from '@mantine/core';
 
 interface ProductCard {
   src?: string;
@@ -34,11 +34,8 @@ export default function ProductCardV2(props: ProductCard) {
           src={src}
           alt={name}
           withPlaceholder
-          placeholder={
-            <Text sx={{ userSelect: 'none' }}>
-              {name}
-            </Text>
-          }
+          placeholder={<Text sx={{ userSelect: 'none' }}>{name}</Text>}
+          sx={{ userSelect: 'none' }}
         />
       </Card.Section>
 
