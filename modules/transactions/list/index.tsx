@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
 import { Table, Paper, Pagination, Group, Badge, ActionIcon, Text } from '@mantine/core';
 import { IconEye } from '@tabler/icons';
+import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 
 import { GET_LIST_TRANSACTIONS } from '../../../services/transactions';
 import { convertToRupiah } from '../../../context/helpers';
-import { useQuery } from '@apollo/client';
+import { GLOBAL_FORMAT_DATE } from '../../../context/global';
+
 import client from '../../../apollo-client';
+
 
 interface TableOrderHistoriesProps {
   onClick: (id: string) => void;
@@ -24,7 +26,7 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
     return (
       <tr key={row.id}>
         <td>{row.code || '-'}</td>
-        <td>{dayjs(row.transaction_date).add(1, 'month').format('LLLL')}</td>
+        <td>{dayjs(row.transaction_date).format(GLOBAL_FORMAT_DATE)}</td>
         <td>
           {row.customer?.name || (
             <Text fs="italic" color="dimmed">
@@ -52,7 +54,7 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
         <thead>
           <tr>
             <th>Nomor Pesanan</th>
-            <th>Waktu Pemesanan</th>
+            <th>Waktu Transaksi</th>
             <th>Nama Custormer</th>
             <th>Total Pesanan</th>
             <th>Kasir</th>
