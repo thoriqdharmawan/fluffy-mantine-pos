@@ -58,19 +58,9 @@ export const GET_LIST_PRODUCTS_MENUS = gql`
       id
       name
       image
-      type
-      description
-      variants {
-        id
-        name
-        values
-      }
       product_variants {
         id
-        coord
-        is_primary
         price
-        stock
       }
     }
   }
@@ -102,6 +92,16 @@ export const GET_PRODUCT_BY_ID = gql`
         id
         values
         name
+      }
+      product_variants_aggregate {
+        aggregate {
+          max {
+            price
+          }
+          min {
+            price
+          }
+        }
       }
     }
   }
