@@ -3,6 +3,7 @@ import {
   ActionIcon,
   Box,
   Button,
+  Center,
   Modal,
   Title,
   Text,
@@ -19,6 +20,7 @@ import { getPrices } from '../../../../context/helpers';
 import client from '../../../../apollo-client';
 
 import SelectVariants from '../../../../components/cards/SelectVariants';
+import Loading from '../../../../components/loading/Loading';
 
 interface Props {
   id: string;
@@ -27,16 +29,15 @@ interface Props {
 }
 
 export default function DetailProduct(props: Props) {
-  const { addItem } = useCart();
+  const { addItem, getItem } = useCart();
   const { id, open, onClose } = props;
 
   const [quantity, setQuantity] = useState<number>(1);
-
   const [selectedPV, setSelectedPV] = useState<any>(undefined);
-
   const [coord, setCoord] = useState<number[] | undefined>(undefined);
 
   const { data, loading, error } = useQuery(GET_PRODUCT_BY_ID, {
+    fetchPolicy: 'cache-and-network',
     client: client,
     skip: !id,
     variables: {
@@ -51,6 +52,10 @@ export default function DetailProduct(props: Props) {
     },
   });
 
+  if (error) {
+    console.error(error);
+  }
+
   const { name, image, product_variants, product_variants_aggregate, variants, description, type } =
     data?.products?.[0] || {};
 
@@ -58,6 +63,16 @@ export default function DetailProduct(props: Props) {
     onClose();
     setQuantity(1);
   };
+
+  const availableStock =
+    useMemo(() => {
+      if (selectedPV) {
+        const availStock = selectedPV?.stock || 0;
+        const quantityInChart = getItem(selectedPV.id)?.quantity || 0;
+
+        return availStock - quantityInChart || 0;
+      }
+    }, [selectedPV, open]) || 0;
 
   const handleAddToCart = () => {
     if ((!!selectedPV || type === 'NOVARIANT') && quantity > 0) {
@@ -103,76 +118,88 @@ export default function DetailProduct(props: Props) {
 
   return (
     <Modal size={440} opened={open} onClose={handleClose}>
-      <Image
-        height={300}
-        width={300}
-        mx="auto"
-        mb="xl"
-        alt={name}
-        src={image}
-        withPlaceholder
-        radius="md"
-        placeholder={<Text sx={{ userSelect: 'none' }}>{name}</Text>}
-        sx={{ userSelect: 'none' }}
-      />
-
-      <Title mb="xs" order={3} ta="center">
-        {name}
-      </Title>
-      <Text color="dimmed" mb="xl" size="sm" ta="center">
-        {rangePrice}
-      </Text>
-
-      <Section label="Deskripsi Produk" value={description} />
-
-      {variants?.map((variant: any, i: number) => {
-        const variantIndex = selectedPV?.coord?.[i];
-        return (
-          <SelectVariants
-            key={i}
-            value={variant.values?.[variantIndex]}
-            title={variant.name}
-            variants={variant.values}
-            onChange={(value: string) => handleSelectVariant(value, variant.values, i)}
+      {loading && <LoadingDetail />}
+      {!loading && (
+        <>
+          <Image
+            height={300}
+            width={300}
+            mx="auto"
+            mb="xl"
+            alt={name}
+            src={image}
+            withPlaceholder
+            radius="md"
+            placeholder={<Text sx={{ userSelect: 'none' }}>{name}</Text>}
+            sx={{ userSelect: 'none' }}
           />
-        );
-      })}
 
-      <Section label="Total Stok" value={product_variants?.[0].stock} />
+          <Title mb="xs" order={3} ta="center">
+            {name}
+          </Title>
+          <Text color="dimmed" mb="xl" size="sm" ta="center">
+            {rangePrice}
+          </Text>
 
-      <Title order={6} mb="xs">
-        Jumlah
-      </Title>
-      <Flex align="center" gap="xs" mb="xl" w="100%">
-        <ActionIcon
-          disabled={quantity <= 1}
-          onClick={() => setQuantity((prev) => prev - 1)}
-          radius="lg"
-          variant="default"
-        >
-          <IconMinus size={12} />
-        </ActionIcon>
-        <NumberInput
-          value={quantity}
-          radius="xl"
-          w="100%"
-          ta="right"
-          min={0}
-          onChange={(number: number) => setQuantity(number)}
-          styles={{ input: { textAlign: 'center' } }}
-          defaultValue={0}
-          hideControls
-        />
-        <ActionIcon onClick={() => setQuantity((prev) => prev + 1)} variant="default" radius="lg">
-          <IconPlus size={12} />
-        </ActionIcon>
-      </Flex>
+          <Section label="Deskripsi Produk" value={description} />
+
+          {variants?.map((variant: any, i: number) => {
+            const variantIndex = selectedPV?.coord?.[i];
+            return (
+              <SelectVariants
+                key={i}
+                value={variant.values?.[variantIndex]}
+                title={variant.name}
+                variants={variant.values}
+                onChange={(value: string) => handleSelectVariant(value, variant.values, i)}
+              />
+            );
+          })}
+
+          <Section label="Stok" value={availableStock || 0} />
+
+          <Title order={6} mb="xs">
+            Jumlah
+          </Title>
+          <Flex align="center" gap="xs" mb="xl" w="100%">
+            <ActionIcon
+              disabled={quantity <= 1}
+              onClick={() => setQuantity((prev) => prev - 1)}
+              radius="lg"
+              variant="default"
+            >
+              <IconMinus size={12} />
+            </ActionIcon>
+            <NumberInput
+              value={quantity}
+              radius="xl"
+              w="100%"
+              ta="right"
+              min={0}
+              max={availableStock}
+              onChange={(number: number) => setQuantity(number)}
+              styles={{ input: { textAlign: 'center' } }}
+              defaultValue={0}
+              hideControls
+            />
+            <ActionIcon
+              onClick={() => setQuantity((prev) => prev + 1)}
+              variant="default"
+              radius="lg"
+              disabled={quantity >= availableStock}
+            >
+              <IconPlus size={12} />
+            </ActionIcon>
+          </Flex>
+        </>
+      )}
 
       <Button
         onClick={handleAddToCart}
         w="100%"
         radius="lg"
         mt="xl"
+        disabled={loading || availableStock <= 0}
         leftIcon={<IconShoppingCart size={18} />}
       >
         Tambah ke Keranjang
@@ -183,13 +210,26 @@ export default function DetailProduct(props: Props) {
 
 const Section = ({ label, value }: { label: string; value: string | number }) => {
   return (
-    <Box mb="md">
-      <Title mb="xs" order={6}>
+    <Box mb="xl">
+      <Title order={6}>
         {label}
       </Title>
       <Text fz="sm" mb="sm">
         {value}
       </Text>
     </Box>
+  );
+};
+
+const LoadingDetail = () => {
+  return (
+    <>
+      <Center>
+        <Loading count={1} width={300} height={300} />
+      </Center>
+      <Box mt="xl">
+        <Loading count={3} />
+      </Box>
+    </>
   );
 };

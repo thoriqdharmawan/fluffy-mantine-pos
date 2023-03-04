@@ -8,20 +8,12 @@ export const GET_LIST_TRANSACTIONS = gql`
       }
     }
 
-    transactions(limit: $limit, offset: $offset, order_by: { transaction_date: desc }) {
+    transactions(limit: $limit, offset: $offset, order_by: { created_at: desc }) {
       id
       code
-      transaction_date
       total_amount
       status
-      employee {
-        id
-        name
-      }
-      customer {
-        id
-        name
-      }
+      created_at
     }
   }
 `;
@@ -31,7 +23,7 @@ export const GET_DETAIL_TRANSACTION = gql`
     transactions(where: { id: { _eq: $id } }) {
       id
       code
-      transaction_date
+      created_at
       total_amount
       payment_amount
       payment_method
@@ -61,7 +53,7 @@ export const GET_DETAIL_TRANSACTION = gql`
 
 export const GET_TOTAL_TRANSACTIONS_TODAY = gql`
   query GetTotalTransactionToday($gte: timestamptz, $lte: timestamptz) {
-    total: transactions_aggregate(where: { transaction_date: { _gte: $gte, _lte: $lte } }) {
+    total: transactions_aggregate(where: { created_at: { _gte: $gte, _lte: $lte } }) {
       aggregate {
         count
       }
@@ -76,7 +68,6 @@ export const ADD_TRANSACTION = gql`
     $tax: numeric
     $total_amount: numeric
     $code: String
-    $transaction_date: timestamptz
     $payment_method: String
     $payment_type: String
     $status: String
@@ -91,7 +82,6 @@ export const ADD_TRANSACTION = gql`
         tax: $tax
         total_amount: $total_amount
         code: $code
-        transaction_date: $transaction_date
         payment_method: $payment_method
         payment_type: $payment_type
         status: $status

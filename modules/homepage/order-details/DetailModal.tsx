@@ -99,7 +99,7 @@ export default function DetailModal(props: Props) {
       total_amount: totalPayment,
       code: transactionNumber,
       tax: 0,
-      transaction_date: dayjs().format('YYYY-MM-DDTHH:mm:ss'),
+      // created_at: dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
       tax_type: 'PERCENT',
       payment_method: values.paymentMethod,
       payment_type: values.paymentType,

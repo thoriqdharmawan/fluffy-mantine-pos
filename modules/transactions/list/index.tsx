@@ -39,16 +39,8 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
     return (
       <tr key={row.id}>
         <td>{row.code || '-'}</td>
-        <td>{dayjs(row.transaction_date).format(GLOBAL_FORMAT_DATE)}</td>
-        <td>
-          {row.customer?.name || (
-            <Text fs="italic" color="dimmed">
-              Tamu
-            </Text>
-          )}
-        </td>
+        <td>{dayjs(row.created_at).format(GLOBAL_FORMAT_DATE)}</td>
         <td>{convertToRupiah(row.total_amount)}</td>
-        <td>{row.employee?.name}</td>
         <td>
           <Badge color="green">{STATUS[row.status] || 'Selesai'}</Badge>
         </td>
@@ -66,11 +58,9 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
       <Table verticalSpacing="xs" striped>
         <thead>
           <tr>
-            <th>Nomor Pesanan</th>
+            <th>Nomor Transaksi</th>
             <th>Waktu Transaksi</th>
-            <th>Nama Custormer</th>
-            <th>Total Pesanan</th>
-            <th>Kasir</th>
+            <th>Total Transaksi</th>
             <th>Status</th>
             <th>Aksi</th>
           </tr>

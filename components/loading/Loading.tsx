@@ -1,10 +1,10 @@
-import { createStyles} from '@mantine/core';
+import { createStyles } from '@mantine/core';
 import Skeleton from 'react-loading-skeleton';
 
 type Props = {
-  height?: number;
+  height?: number | string;
+  width?: number | string;
   count?: number;
-  width?: string;
   direction?: string;
 };
 
