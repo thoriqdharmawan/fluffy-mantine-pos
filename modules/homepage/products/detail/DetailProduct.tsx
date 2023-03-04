@@ -12,12 +12,13 @@ import {
 } from '@mantine/core';
 import { IconPlus, IconMinus, IconShoppingCart } from '@tabler/icons';
 import { useCart } from 'react-use-cart';
+import { useQuery } from '@apollo/client';
+
+import { GET_PRODUCT_BY_ID } from '../../../../services/products';
+import { getPrices } from '../../../../context/helpers';
+import client from '../../../../apollo-client';
 
 import SelectVariants from '../../../../components/cards/SelectVariants';
-import { useQuery } from '@apollo/client';
-import { GET_PRODUCT_BY_ID } from '../../../../services/products';
-import client from '../../../../apollo-client';
-import { convertToRupiah } from '../../../../context/helpers';
 
 interface Props {
   id: string;
@@ -97,14 +98,7 @@ export default function DetailProduct(props: Props) {
 
   const rangePrice = useMemo(() => {
     const { max, min } = product_variants_aggregate?.aggregate || {};
-    
-    const pricesMax = convertToRupiah(max.price);
-    const pricesMin = convertToRupiah(min.price);
-    const arr = [pricesMin, pricesMax];
-
-    const prices = arr.filter((value, index) => arr.indexOf(value) === index).join(' - ');
-
-    return prices;
+    return getPrices(max?.price, min?.price);
   }, [product_variants_aggregate]);
 
   return (

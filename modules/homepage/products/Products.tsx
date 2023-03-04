@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { Box, Grid, ScrollArea, Text } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
+import { useQuery } from '@apollo/client';
 
 import { GET_LIST_PRODUCTS_MENUS } from '../../../services/products';
+import { getPrices } from '../../../context/helpers';
 import { useUser } from '../../../context/user';
-
-import ProductsCard from '../../../components/cards/ProductsCard';
-import SearchBar from '../../../components/SearchBar';
-import { convertToRupiah } from '../../../context/helpers';
-import { useQuery } from '@apollo/client';
 import client from '../../../apollo-client';
+
+import SearchBar from '../../../components/SearchBar';
 import ProductCardV2 from '../../../components/cards/ProductCardV2';
 import DetailProduct from './detail/DetailProduct';
 
@@ -46,14 +45,16 @@ export default function Products() {
           />
           <Grid>
             {data?.products.map((product: any) => {
+              const { max, min } = product?.product_variants_aggregate?.aggregate || {};
+              const prices = getPrices(max?.price, min?.price);
+
               return (
                 <Grid.Col key={product.id} sm={6} lg={4} xl={3}>
                   <ProductCardV2
                     key={product.id}
                     src={product.image}
                     name={product.name}
-                    price={convertToRupiah(product?.product_variants?.[0].price)}
-                    // onClick={() => handleClickProduct(product.id)}
+                    price={prices}
                     onClick={() => setDetail({ open: true, id: product.id })}
                   />
                 </Grid.Col>

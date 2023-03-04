@@ -3,7 +3,6 @@ import client from '../../apollo-client';
 
 import {
   GET_LIST_PRODUCTS,
-  GET_LIST_PRODUCTS_MENUS,
   GET_LIST_PRODUCT_VARIANTS,
   GET_PRODUCT_BY_ID,
 } from './product.graphql';
