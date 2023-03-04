@@ -1,4 +1,4 @@
-import { Table, Paper, Pagination, Group, Badge, ActionIcon, Text } from '@mantine/core';
+import { Table, Paper, Pagination, Group, Badge, ActionIcon } from '@mantine/core';
 import { IconEye } from '@tabler/icons';
 import { useQuery } from '@apollo/client';
 import { usePagination } from '@mantine/hooks';
@@ -10,6 +10,7 @@ import { GLOBAL_FORMAT_DATE } from '../../../context/global';
 
 import client from '../../../apollo-client';
 import Loading from '../../../components/loading/Loading';
+import { Empty } from '../../../components/empty-state';
 
 interface TableOrderHistoriesProps {
   onClick: (id: string) => void;
@@ -68,6 +69,12 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
         {!loading && <tbody>{rows}</tbody>}
       </Table>
       {loading && <Loading />}
+      {data?.total.aggregate.count === 0 && (
+        <Empty
+          title="Tidak Ada Transaksi"
+          label="Anda belum melakukan transaksi apapun. Riwayat transaksi akan muncul di sini setelah Anda melakukan transaksi pertama Anda."
+        />
+      )}
       <Group mt={24} mb={12}>
         <Pagination ml="auto" total={totalPage} onChange={pagination.setPage} />
       </Group>

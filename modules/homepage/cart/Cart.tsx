@@ -4,6 +4,7 @@ import { useCart } from 'react-use-cart';
 
 import { convertToRupiah, getVariants } from '../../../context/helpers';
 import ProductItemCart from './ProductItemCart';
+import { Empty } from '../../../components/empty-state';
 
 interface Props {
   onNextToPayment: (allItems: any) => void;
@@ -61,6 +62,11 @@ export default function Cart(props: Props) {
               />
             );
           })}
+
+          {allItems.length === 0 && (
+            <Empty title="Tidak Ada Produk" label="Tambahkan Beberapa Produk ke Keranjang." />
+          )}
+          
         </Box>
       </Box>
       <Button
