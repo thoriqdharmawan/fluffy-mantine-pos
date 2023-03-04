@@ -3,7 +3,6 @@ import { Box, Flex } from '@mantine/core';
 import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 
-
 import { GET_TOTAL_TRANSACTIONS_TODAY } from '../../services/transactions';
 import client from '../../apollo-client';
 
@@ -32,16 +31,15 @@ export default function Homepage() {
     });
   };
 
+  const transacitonNumber = `#${(data?.total.aggregate.count || 0) + 1}`;
+
   return (
     <>
       <Flex justify="space-between" w="100%" direction={{ base: 'column', md: 'row' }}>
         <Products />
 
         <Box maw={460} w="100%">
-          <Cart
-            onNextToPayment={handleNextPayment}
-            totalTransaction={data?.total.aggregate.count || 0}
-          />
+          <Cart onNextToPayment={handleNextPayment} transacitonNumber={transacitonNumber} />
         </Box>
       </Flex>
 
@@ -50,6 +48,7 @@ export default function Homepage() {
         onClose={() => setDetail((prev) => ({ ...prev, open: false }))}
         data={detail.data}
         refetchTotalTransaction={refetch}
+        transactionNumber={transacitonNumber}
       />
     </>
   );

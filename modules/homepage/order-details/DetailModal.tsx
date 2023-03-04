@@ -18,6 +18,7 @@ type Props = {
   onClose: () => void;
   data: any[];
   refetchTotalTransaction: () => void;
+  transactionNumber: string;
 };
 
 interface Customer {
@@ -50,7 +51,7 @@ const getNextLabel = (active: number) => {
 };
 
 export default function DetailModal(props: Props) {
-  const { open, onClose, data, refetchTotalTransaction } = props;
+  const { open, onClose, data, refetchTotalTransaction, transactionNumber } = props;
   const { emptyCart } = useCart();
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
@@ -96,7 +97,7 @@ export default function DetailModal(props: Props) {
       customerId: Number(values.customer.name) || null,
       payment_amount: values.paymentAmount,
       total_amount: totalPayment,
-      code: '',
+      code: transactionNumber,
       tax: 0,
       transaction_date: dayjs().format('YYYY-MM-DDTHH:mm:ss'),
       tax_type: 'PERCENT',

@@ -7,11 +7,11 @@ import ProductItemCart from './ProductItemCart';
 
 interface Props {
   onNextToPayment: (allItems: any) => void;
-  totalTransaction: number;
+  transacitonNumber: string;
 }
 
 export default function Cart(props: Props) {
-  const { onNextToPayment, totalTransaction } = props;
+  const { onNextToPayment, transacitonNumber } = props;
   const { items, updateItemQuantity, removeItem, emptyCart } = useCart();
   const [allItems, setallItems] = useState([{}]);
 
@@ -34,7 +34,7 @@ export default function Cart(props: Props) {
             backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : '#fff',
           })}
         >
-          <Title order={3}>Pesanan #{totalTransaction + 1}</Title>
+          <Title order={3}>Pesanan {transacitonNumber}</Title>
 
           <Button compact variant="subtle" onClick={emptyCart}>
             Hapus Semua Pesanan
