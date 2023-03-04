@@ -45,7 +45,13 @@ export default function ProductItemCart({
     }, [id]) || 0;
 
   return (
-    <Paper mb="xl" h="auto">
+    <Paper
+      p="lg"
+      mb="xl"
+      h="auto"
+      shadow="sm"
+      radius="md"
+    >
       <Flex justify="start" mb="sm">
         <Image radius="sm" src={src} withPlaceholder width={60} height={60} mr="sm" />
         <Box>
@@ -62,7 +68,7 @@ export default function ProductItemCart({
           </Flex>
         </Box>
       </Flex>
-      <Flex align="center" mb="sm" justify="end">
+      <Flex align="center" justify="end">
         <ActionIcon onClick={onRemove} radius="lg" variant="light" color="red" mr="sm">
           <IconTrash size={12} />
         </ActionIcon>
@@ -93,7 +99,7 @@ export default function ProductItemCart({
         </ActionIcon>
       </Flex>
 
-      <TextInput placeholder="Tambahkan Catatan.." variant="filled" />
+      {/* <TextInput placeholder="Tambahkan Catatan.." variant="filled" /> */}
     </Paper>
   );
 }
