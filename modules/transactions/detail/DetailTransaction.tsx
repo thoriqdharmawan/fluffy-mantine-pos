@@ -42,7 +42,7 @@ export default function DetailTransaction(props: Props) {
     console.error(error);
   }
 
-  const { code, employee, transaction_date, payment_type, payment_method, status, products_solds } =
+  const { code, employee, created_at, payment_type, payment_method, status, products_solds } =
     data?.transactions?.[0] || {};
 
   const totalPayment = useMemo(() => {
@@ -59,7 +59,7 @@ export default function DetailTransaction(props: Props) {
             <List label="Kasir" value={employee?.name} />
             <List
               label="Waktu Transaksi"
-              value={dayjs(transaction_date).format(GLOBAL_FORMAT_DATE)}
+              value={dayjs(created_at).format(GLOBAL_FORMAT_DATE)}
             />
             <List label="Metode Pembayaran" value={`${payment_type} - ${payment_method}`} />
             <List label="Status" value={status} />
