@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 
 import { GET_LIST_TRANSACTIONS } from '../../../services/transactions';
 import { convertToRupiah } from '../../../context/helpers';
-import { GLOBAL_FORMAT_DATE } from '../../../context/global';
+import { GLOBAL_FORMAT_DATE, TRANSACTION_STATUS } from '../../../context/global';
 
 import client from '../../../apollo-client';
 import Loading from '../../../components/loading/Loading';
@@ -43,7 +43,7 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
         <td>{dayjs(row.created_at).format(GLOBAL_FORMAT_DATE)}</td>
         <td>{convertToRupiah(row.total_amount)}</td>
         <td>
-          <Badge color="green">{STATUS[row.status] || 'Selesai'}</Badge>
+          <Badge color="green">{TRANSACTION_STATUS[row.status] || 'Selesai'}</Badge>
         </td>
         <td>
           <ActionIcon onClick={() => onClick(row.id)} variant="light" color="primary">
@@ -81,7 +81,3 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
     </Paper>
   );
 }
-
-const STATUS: any = {
-  COMPLETED: 'Selesai',
-};
