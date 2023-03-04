@@ -50,6 +50,7 @@ export default function Cart(props: Props) {
 
             return (
               <ProductItemCart
+                id={item.id}
                 quantity={item.quantity || 0}
                 name={item.name}
                 src={item.src}
@@ -66,7 +67,6 @@ export default function Cart(props: Props) {
           {allItems.length === 0 && (
             <Empty title="Tidak Ada Produk" label="Tambahkan Beberapa Produk ke Keranjang." />
           )}
-          
         </Box>
       </Box>
       <Button
