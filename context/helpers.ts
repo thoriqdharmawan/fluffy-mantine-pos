@@ -54,4 +54,14 @@ const getNominals = (totalTagihan: number): number[] => {
   return result.slice(0, 3);
 };
 
-export { getInitials, convertToRupiah, getVariants, getNominals };
+const getPrices = (max: number | undefined, min: number | undefined) => {
+  const pricesMax = convertToRupiah(max || 0);
+  const pricesMin = convertToRupiah(min || 0);
+  const arr = [pricesMin, pricesMax];
+
+  const prices = arr?.filter((value, index) => arr.indexOf(value) === index).join(' - ');
+
+  return prices;
+};
+
+export { getInitials, convertToRupiah, getVariants, getNominals, getPrices };

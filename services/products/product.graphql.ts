@@ -58,9 +58,16 @@ export const GET_LIST_PRODUCTS_MENUS = gql`
       id
       name
       image
-      product_variants {
-        id
-        price
+
+      product_variants_aggregate {
+        aggregate {
+          max {
+            price
+          }
+          min {
+            price
+          }
+        }
       }
     }
   }
