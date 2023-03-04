@@ -94,3 +94,11 @@ export const ADD_TRANSACTION = gql`
     }
   }
 `;
+
+export const DECREASE_VARIANT_BY_ID = gql`
+  mutation DecreaseVarinats($quantity: Int!, $id: Int!) {
+    update_product_variants(_inc: { stock: $quantity }, where: { id: { _eq: $id } }) {
+      affected_rows
+    }
+  }
+`;

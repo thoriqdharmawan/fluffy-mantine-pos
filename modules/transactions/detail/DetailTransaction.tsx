@@ -6,9 +6,9 @@ import dayjs from 'dayjs';
 import Skeleton from 'react-loading-skeleton';
 
 import { GET_DETAIL_TRANSACTION } from '../../../services/transactions';
-import client from '../../../apollo-client';
 import { convertToRupiah } from '../../../context/helpers';
-import { GLOBAL_FORMAT_DATE } from '../../../context/global';
+import { GLOBAL_FORMAT_DATE, TRANSACTION_STATUS } from '../../../context/global';
+import client from '../../../apollo-client';
 
 interface Props {
   id: string;
@@ -46,8 +46,12 @@ export default function DetailTransaction(props: Props) {
     data?.transactions?.[0] || {};
 
   const totalPayment = useMemo(() => {
-    return products_solds?.reduce((acc: any, cur: any) => acc.total_price + cur.total_price);
-  }, [products_solds]);
+    if (products_solds?.length > 1) {
+      return products_solds?.reduce((acc: any, cur: any) => acc.total_price + cur.total_price);
+    }
+
+    return products_solds?.[0].total_price || 0;
+  }, [products_solds, opened]);
 
   return (
     <Modal size={640} opened={opened} onClose={onClose} title="Detail Transaksi">
@@ -57,12 +61,9 @@ export default function DetailTransaction(props: Props) {
           <SimpleGrid mb="xl" cols={2}>
             <List label="Nomor Transaksi" value={code || '-'} />
             <List label="Kasir" value={employee?.name} />
-            <List
-              label="Waktu Transaksi"
-              value={dayjs(created_at).format(GLOBAL_FORMAT_DATE)}
-            />
+            <List label="Waktu Transaksi" value={dayjs(created_at).format(GLOBAL_FORMAT_DATE)} />
             <List label="Metode Pembayaran" value={`${payment_type} - ${payment_method}`} />
-            <List label="Status" value={status} />
+            <List label="Status" value={TRANSACTION_STATUS[status]} />
           </SimpleGrid>
 
           <Table highlightOnHover withBorder withColumnBorders>

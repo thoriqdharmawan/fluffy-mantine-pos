@@ -11,6 +11,8 @@ import client from '../../../apollo-client';
 import SearchBar from '../../../components/SearchBar';
 import ProductCardV2 from '../../../components/cards/ProductCardV2';
 import DetailProduct from './detail/DetailProduct';
+import { Empty } from '../../../components/empty-state';
+import Loading from '../../../components/loading/Loading';
 
 export default function Products() {
   const { companyId } = useUser();
@@ -19,7 +21,7 @@ export default function Products() {
     open: false,
     id: '',
   });
-  const [debounce] = useDebouncedValue(search, 200);
+  const [debounce] = useDebouncedValue(search, 500);
 
   const { data, loading } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
@@ -60,9 +62,20 @@ export default function Products() {
                 </Grid.Col>
               );
             })}
+            {loading &&
+              new Array(12).fill(0).map((i, idx) => {
+                return (
+                  <Grid.Col key={`${i}${idx}`} sm={6} lg={4} xl={3}>
+                    <Loading width="100%" height={242} count={1} />
+                  </Grid.Col>
+                );
+              })}
           </Grid>
           {!loading && data?.total.aggregate.count === 0 && (
-            <Text m="xl">Tidak ada Produk lagi</Text>
+            <Empty
+              title={debounce ? EMPTY_SEARCH.title : EMPTY_PRODUCT.title}
+              label={debounce ? EMPTY_SEARCH.label : EMPTY_PRODUCT.label}
+            />
           )}
         </Box>
       </ScrollArea>
@@ -75,3 +88,15 @@ export default function Products() {
     </>
   );
 }
+
+const EMPTY_PRODUCT = {
+  title: 'Tidak Ada Produk',
+  label:
+    'Anda belum menambahkan produk apapun ke sistem. Daftar produk yang telah ditambahkan akan muncul di sini',
+};
+
+const EMPTY_SEARCH = {
+  title: 'Produk Tidak Ditemukan',
+  label:
+    'Maaf, produk yang Anda cari tidak ditemukan. Silakan periksa kembali kata kunci pencarian Anda atau cobalah kata kunci lain.',
+};

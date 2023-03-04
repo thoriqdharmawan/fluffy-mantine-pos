@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import {
   Box,
   Flex,
@@ -11,8 +12,10 @@ import {
   Paper,
 } from '@mantine/core';
 import { IconPlus, IconMinus, IconTrash } from '@tabler/icons';
+import { useCart } from 'react-use-cart';
 
 type Props = {
+  id: string;
   name: string;
   src: string;
   price: string;
@@ -24,6 +27,7 @@ type Props = {
 };
 
 export default function ProductItemCart({
+  id,
   quantity,
   src,
   name,
@@ -33,8 +37,21 @@ export default function ProductItemCart({
   onSubtract,
   onRemove,
 }: Props) {
+  const { getItem } = useCart();
+
+  const availableStock =
+    useMemo(() => {
+      return getItem(id)?.stock;
+    }, [id]) || 0;
+
   return (
-    <Paper mb="xl" h="auto">
+    <Paper
+      p="lg"
+      mb="xl"
+      h="auto"
+      shadow="sm"
+      radius="md"
+    >
       <Flex justify="start" mb="sm">
         <Image radius="sm" src={src} withPlaceholder width={60} height={60} mr="sm" />
         <Box>
@@ -44,12 +61,14 @@ export default function ProductItemCart({
           </Text>
           <Flex mt="sm" gap="sm">
             {variants.map((v, i) => (
-              <Badge sx={{textTransform: 'capitalize'}} key={i}>{v}</Badge>
+              <Badge sx={{ textTransform: 'capitalize' }} key={i}>
+                {v}
+              </Badge>
             ))}
           </Flex>
         </Box>
       </Flex>
-      <Flex align="center" mb="sm" justify="end">
+      <Flex align="center" justify="end">
         <ActionIcon onClick={onRemove} radius="lg" variant="light" color="red" mr="sm">
           <IconTrash size={12} />
         </ActionIcon>
@@ -67,13 +86,20 @@ export default function ProductItemCart({
           hideControls
           variant="unstyled"
           w={60}
+          max={availableStock}
         />
-        <ActionIcon onClick={onAdd} radius="lg" variant="light" color="blue">
+        <ActionIcon
+          onClick={onAdd}
+          disabled={quantity >= availableStock}
+          radius="lg"
+          variant="light"
+          color="blue"
+        >
           <IconPlus size={12} />
         </ActionIcon>
       </Flex>
 
-      <TextInput placeholder="Tambahkan Catatan.." variant="filled" />
+      {/* <TextInput placeholder="Tambahkan Catatan.." variant="filled" /> */}
     </Paper>
   );
 }

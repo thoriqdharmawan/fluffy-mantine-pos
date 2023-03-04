@@ -4,6 +4,7 @@ import { useCart } from 'react-use-cart';
 
 import { convertToRupiah, getVariants } from '../../../context/helpers';
 import ProductItemCart from './ProductItemCart';
+import { Empty } from '../../../components/empty-state';
 
 interface Props {
   onNextToPayment: (allItems: any) => void;
@@ -37,7 +38,7 @@ export default function Cart(props: Props) {
           <Title order={3}>Pesanan {transacitonNumber}</Title>
 
           <Button compact variant="subtle" onClick={emptyCart}>
-            Hapus Semua Pesanan
+            Kosongkan Keranjang
           </Button>
         </Flex>
 
@@ -49,18 +50,23 @@ export default function Cart(props: Props) {
 
             return (
               <ProductItemCart
+                key={i}
+                id={item.id}
                 quantity={item.quantity || 0}
                 name={item.name}
                 src={item.src}
                 price={convertToRupiah(item.price)}
                 variants={variant}
-                key={i}
                 onAdd={() => updateItemQuantity(item.id, (item.quantity || 0) + 1)}
                 onSubtract={() => updateItemQuantity(item.id, (item.quantity || 0) - 1)}
                 onRemove={() => removeItem(item.id)}
               />
             );
           })}
+
+          {allItems.length === 0 && (
+            <Empty title="Tidak Ada Produk" label="Tambahkan Beberapa Produk ke Keranjang." />
+          )}
         </Box>
       </Box>
       <Button
@@ -68,6 +74,7 @@ export default function Cart(props: Props) {
         w="100%"
         m="auto"
         radius={0}
+        disabled={allItems.length === 0}
         onClick={() => onNextToPayment(allItems)}
         sx={{
           '&:active': {
@@ -75,7 +82,7 @@ export default function Cart(props: Props) {
           },
         }}
       >
-        Lanjut Ke Pembayaran
+        Lanjut Ke Detail Pesanan
       </Button>
     </Paper>
   );

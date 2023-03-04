@@ -20,10 +20,9 @@ export default function ProductCardV2(props: ProductCard) {
         },
       }}
       onClick={onClick}
-      shadow="sm"
+      shadow="md"
       p="lg"
       radius="md"
-      withBorder
     >
       <Card.Section>
         <Image

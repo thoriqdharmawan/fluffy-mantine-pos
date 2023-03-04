@@ -10,7 +10,7 @@ import DetailOrders from './steps/DetailOrders';
 import CompletePayment from './steps/CompletePayment';
 import PaymentMethod from './steps/payment-method/PaymentMethod';
 import PayNow from './steps/PayNow';
-import { addTransaction } from '../../../services/transactions';
+import { addTransaction, decreaseStock } from '../../../services/transactions';
 import { getVariants } from '../../../context/helpers';
 
 type Props = {
@@ -99,7 +99,6 @@ export default function DetailModal(props: Props) {
       total_amount: totalPayment,
       code: transactionNumber,
       tax: 0,
-      // created_at: dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ss'),
       tax_type: 'PERCENT',
       payment_method: values.paymentMethod,
       payment_type: values.paymentType,
@@ -133,6 +132,12 @@ export default function DetailModal(props: Props) {
           icon: <IconCheck />,
           color: 'green',
         });
+        decreaseStock(
+          data?.map(({ id, quantity }) => ({
+            id,
+            quantity: quantity * -1,
+          }))
+        );
         refetchTotalTransaction();
         setActive((current) => (current < 3 ? current + 1 : current));
       })
