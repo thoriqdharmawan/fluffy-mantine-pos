@@ -50,13 +50,13 @@ export default function Cart(props: Props) {
 
             return (
               <ProductItemCart
+                key={i}
                 id={item.id}
                 quantity={item.quantity || 0}
                 name={item.name}
                 src={item.src}
                 price={convertToRupiah(item.price)}
                 variants={variant}
-                key={i}
                 onAdd={() => updateItemQuantity(item.id, (item.quantity || 0) + 1)}
                 onSubtract={() => updateItemQuantity(item.id, (item.quantity || 0) - 1)}
                 onRemove={() => removeItem(item.id)}
