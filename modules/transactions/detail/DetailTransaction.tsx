@@ -9,6 +9,7 @@ import { GET_DETAIL_TRANSACTION } from '../../../services/transactions';
 import { convertToRupiah } from '../../../context/helpers';
 import { GLOBAL_FORMAT_DATE, TRANSACTION_STATUS } from '../../../context/global';
 import client from '../../../apollo-client';
+import TransactionId from '../../../components/cards/TransactionId';
 
 interface Props {
   id: string;
@@ -42,16 +43,13 @@ export default function DetailTransaction(props: Props) {
     console.error(error);
   }
 
-  const { code, employee, created_at, payment_type, payment_method, status, products_solds } =
+  const { id: transactionId, code, employee, created_at, payment_type, payment_method, status, products_solds, total_amount, payment_amount } =
     data?.transactions?.[0] || {};
 
-  const totalPayment = useMemo(() => {
-    if (products_solds?.length > 1) {
-      return products_solds?.reduce((acc: any, cur: any) => acc.total_price + cur.total_price);
-    }
+  console.log(data)
 
-    return products_solds?.[0].total_price || 0;
-  }, [products_solds, opened]);
+  const offset = payment_amount - total_amount;
+
 
   return (
     <Modal size={640} opened={opened} onClose={onClose} title="Detail Transaksi">
@@ -66,7 +64,7 @@ export default function DetailTransaction(props: Props) {
             <List label="Status" value={TRANSACTION_STATUS[status]} />
           </SimpleGrid>
 
-          <Table highlightOnHover withBorder withColumnBorders>
+          <Table highlightOnHover withBorder withColumnBorders mb="xl">
             <thead>
               <tr>
                 <th>Nama Barang</th>
@@ -85,24 +83,45 @@ export default function DetailTransaction(props: Props) {
                     <td>{product.name}</td>
                     <td>{variants || 'Tidak ada varian'}</td>
                     <td>{product.quantity_sold}</td>
-                    <td>{convertToRupiah(product.unit_price)}</td>
-                    <td>{convertToRupiah(product.total_price)}</td>
+                    <td><Text ta="right">{convertToRupiah(product.unit_price)}</Text></td>
+                    <td><Text ta="right">{convertToRupiah(product.total_price)}</Text></td>
                   </tr>
                 );
               })}
 
               <tr>
                 <td colSpan={4}>
-                  <Text ta="right" fw={600}>
-                    Subtotal
+                  <Text fw={600}>
+                    Total Tagihan
                   </Text>
                 </td>
-                <td>{convertToRupiah(totalPayment)}</td>
+                <td><Text ta="right">{convertToRupiah(total_amount)}</Text></td>
               </tr>
+              <tr>
+                <td colSpan={4}><Text >Dibayar</Text></td>
+                <td><Text ta="right">{convertToRupiah(payment_amount)}</Text></td>
+              </tr>
+              {offset > 0 && (
+                <tr>
+                  <td colSpan={4}><Text>Kembali</Text></td>
+                  <td align="right">
+                    <Text color="green" fw="bold">+ {convertToRupiah(offset)}</Text>
+                  </td>
+                </tr>
+              )}
+              {offset < 0 && (
+                <tr>
+                  <td colSpan={4}><Text >Kurang</Text></td>
+                  <td align="right">
+                    <Text color="red" fw="bold">- {convertToRupiah(Math.abs(124000))}</Text>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </Table>
         </>
       )}
+      <TransactionId transactionId={transactionId} />
     </Modal>
   );
 }

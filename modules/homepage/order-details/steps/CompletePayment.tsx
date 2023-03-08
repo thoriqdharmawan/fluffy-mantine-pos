@@ -1,18 +1,18 @@
-import { Flex, Center, Paper, Table, Text, Title, CopyButton, ActionIcon, Tooltip } from '@mantine/core';
+import { Center, Table, Text, Title } from '@mantine/core';
 import { UseFormReturnType } from '@mantine/form';
-import { IconCopy, IconCheck } from '@tabler/icons';
 
 import { FormValues } from '../DetailModal';
 import { convertToRupiah } from '../../../../context/helpers';
+import TransactionId from '../../../../components/cards/TransactionId';
 
 interface Props {
   form: UseFormReturnType<FormValues>;
   totalPayment: number;
-  transacitonId: string;
+  transactionId: string;
 }
 
 export default function CompletePayment(props: Props) {
-  const { form, totalPayment, transacitonId } = props;
+  const { form, totalPayment, transactionId } = props;
 
   const offset = (form.values.paymentAmount || 0) - totalPayment;
 
@@ -47,27 +47,7 @@ export default function CompletePayment(props: Props) {
           )}
         </tbody>
       </Table>
-      <Title order={5}>ID Transaksi</Title>
-      <Paper miw={400} mt="xl" mb="md" p="lg" shadow="sm" radius="md" withBorder>
-        <Flex
-          gap="md"
-          justify="center"
-          align="center"
-          direction="row"
-          wrap="wrap">
-          <Text variant='gradient' fw="bold">{transacitonId || 'ID Transaksi tidak ditemukan'}</Text>
-          <CopyButton value={transacitonId} timeout={2000}>
-            {({ copied, copy }) => (
-              <Tooltip label={copied ? 'Berhasil disalin' : 'Salin'} withArrow position="right">
-                <ActionIcon variant="light" size="lg" color={copied ? 'teal' : 'gray'} onClick={copy}>
-                  {copied ? <IconCheck size="1.2rem" /> : <IconCopy size="1.2rem" />}
-                </ActionIcon>
-              </Tooltip>
-            )}
-          </CopyButton>
-        </Flex>
-      </Paper>
-      <Text color="dimmed" fs="italic" size="sm" mb="xl">Salin ID Transaksi di atas untuk mencetak struk transaksi</Text>
+      <TransactionId transactionId={transactionId} />
     </Center>
   );
 }

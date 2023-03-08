@@ -55,7 +55,7 @@ export default function DetailModal(props: Props) {
   const { emptyCart } = useCart();
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
-  const [transacitonId, setTransacitonId] = useState<string>('')
+  const [transactionId, setTransactionId] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(false)
 
   const form = useForm<FormValues>({
@@ -130,7 +130,7 @@ export default function DetailModal(props: Props) {
       variables: variables,
     })
       .then((res) => {
-        setTransacitonId(res.data?.insert_transactions.returning?.[0]?.id)
+        setTransactionId(res.data?.insert_transactions.returning?.[0]?.id)
         emptyCart();
         showNotification({
           title: 'Yeayy, Sukses!! 😊',
@@ -208,7 +208,7 @@ export default function DetailModal(props: Props) {
           );
         })}
         <Stepper.Completed>
-          <CompletePayment form={form} totalPayment={totalPayment} transacitonId={transacitonId} />
+          <CompletePayment form={form} totalPayment={totalPayment} transactionId={transactionId} />
         </Stepper.Completed>
       </Stepper>
 
