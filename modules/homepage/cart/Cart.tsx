@@ -14,7 +14,7 @@ interface Props {
 export default function Cart(props: Props) {
   const { onNextToPayment, transacitonNumber } = props;
   const { items, updateItemQuantity, removeItem, emptyCart } = useCart();
-  const [allItems, setallItems] = useState([{}]);
+  const [allItems, setallItems] = useState<any[]>([{}]);
 
   useEffect(() => {
     setallItems(JSON.parse(JSON.stringify(items)));
@@ -55,7 +55,7 @@ export default function Cart(props: Props) {
                 quantity={item.quantity || 0}
                 name={item.name}
                 src={item.src}
-                price={convertToRupiah(item.price)}
+                price={convertToRupiah(item.price || 0)}
                 variants={variant}
                 onAdd={() => updateItemQuantity(item.id, (item.quantity || 0) + 1)}
                 onSubtract={() => updateItemQuantity(item.id, (item.quantity || 0) - 1)}

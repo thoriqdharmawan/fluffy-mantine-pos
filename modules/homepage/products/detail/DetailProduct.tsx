@@ -141,7 +141,7 @@ export default function DetailProduct(props: Props) {
             {rangePrice}
           </Text>
 
-          <Section label="Deskripsi Produk" value={description} />
+          <Section label="Deskripsi Produk" value={description || '-'} />
 
           {variants?.map((variant: any, i: number) => {
             const variantIndex = selectedPV?.coord?.[i];

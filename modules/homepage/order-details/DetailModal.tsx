@@ -55,6 +55,8 @@ export default function DetailModal(props: Props) {
   const { emptyCart } = useCart();
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
+  const [transactionId, setTransactionId] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -91,7 +93,10 @@ export default function DetailModal(props: Props) {
   }, [data]);
 
   const handleCreateTransaction = () => {
+    setLoading(true)
     const { values } = form;
+
+    const offset = (values.paymentAmount || 0) - totalPayment;
 
     const variables = {
       customerId: Number(values.customer.name) || null,
@@ -102,7 +107,7 @@ export default function DetailModal(props: Props) {
       tax_type: 'PERCENT',
       payment_method: values.paymentMethod,
       payment_type: values.paymentType,
-      status: 'COMPLETED',
+      status: offset >= 0 ? 'COMPLETED' : 'INCOMPLETE',
       // ! hardcoded
       employeeId: 'ce879f7a-5190-48f2-9462-24acdd275d20',
       // merchantId: null,
@@ -124,7 +129,8 @@ export default function DetailModal(props: Props) {
     addTransaction({
       variables: variables,
     })
-      .then(() => {
+      .then((res) => {
+        setTransactionId(res.data?.insert_transactions.returning?.[0]?.id)
         emptyCart();
         showNotification({
           title: 'Yeayy, Sukses!! 😊',
@@ -140,6 +146,7 @@ export default function DetailModal(props: Props) {
         );
         refetchTotalTransaction();
         setActive((current) => (current < 3 ? current + 1 : current));
+        setLoading(false)
       })
       .catch(() => {
         showNotification({
@@ -176,7 +183,7 @@ export default function DetailModal(props: Props) {
     {
       label: 'Detail Pesanan',
       description: 'Pesanan yang akan dibuat',
-      components: <DetailOrders products={data} totalPayment={totalPayment} />,
+      components: <DetailOrders open={open} products={data} totalPayment={totalPayment} />,
     },
     {
       label: 'Metode Pembayaran',
@@ -201,15 +208,15 @@ export default function DetailModal(props: Props) {
           );
         })}
         <Stepper.Completed>
-          <CompletePayment onClose={handleClose} />
+          <CompletePayment form={form} totalPayment={totalPayment} transactionId={transactionId} />
         </Stepper.Completed>
       </Stepper>
 
       <Flex hidden={active === 3} justify="space-between" align="center" mt="xl">
-        <Button variant="default" onClick={prevStep}>
+        <Button disabled={loading || active === 0} variant="default" onClick={prevStep}>
           Kembali
         </Button>
-        <Button onClick={nextStep}>{getNextLabel(active)}</Button>
+        <Button loading={loading} onClick={nextStep}>{getNextLabel(active)}</Button>
       </Flex>
     </Modal>
   );

@@ -37,11 +37,13 @@ export default function PaymentMethod(props: Props) {
           icon: IconCashBanknote,
           fieldName: 'GOPAY',
           title: 'Go-Pay',
+          disabled: true,
         },
         {
           icon: IconBrandShopee,
           fieldName: 'SHOPEEPAY',
           title: 'ShoppePay',
+          disabled: true,
         },
       ],
     },
@@ -53,6 +55,7 @@ export default function PaymentMethod(props: Props) {
           icon: IconCashBanknote,
           fieldName: 'CASHIER',
           title: 'Bayar di Kasir',
+          disabled: false,
         },
       ],
     },
@@ -110,9 +113,12 @@ export default function PaymentMethod(props: Props) {
 
   return (
     <Box p="md">
-      <SimpleGrid cols={2} spacing="xl">
+      <SimpleGrid breakpoints={[
+        { minWidth: 'xs', cols: 1 },
+        { minWidth: 'sm', cols: 2 },
+      ]} spacing="xl">
         <div>
-          <Text mb="sm" ta="center" size="md">
+          <Text mb="sm" ta="center" size="md" fw="bold">
             Detail Pelanggan
           </Text>
           <Select
@@ -156,7 +162,7 @@ export default function PaymentMethod(props: Props) {
           />
         </div>
         <div>
-          <Text mb="sm" ta="center" size="md">
+          <Text mb="sm" ta="center" size="md" fw="bold">
             Subtotal
           </Text>
           <Paper mb="xl" p="md" withBorder>
@@ -180,6 +186,7 @@ export default function PaymentMethod(props: Props) {
                       fieldName={option.fieldName}
                       title={option.title}
                       error={isErrorPaymentMethod}
+                      disabled={option.disabled}
                     />
                   );
                 })}
