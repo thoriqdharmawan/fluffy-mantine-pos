@@ -107,7 +107,7 @@ export default function DetailModal(props: Props) {
       tax_type: 'PERCENT',
       payment_method: values.paymentMethod,
       payment_type: values.paymentType,
-      status: offset === 0 ? 'COMPLETED' : 'INCOMPLETE',
+      status: offset >= 0 ? 'COMPLETED' : 'INCOMPLETE',
       // ! hardcoded
       employeeId: 'ce879f7a-5190-48f2-9462-24acdd275d20',
       // merchantId: null,

@@ -43,7 +43,7 @@ export default function Cart(props: Props) {
         </Flex>
 
         <Box px="md">
-          {allItems?.[0]?.item?.id && allItems?.map((item: any, i) => {
+          {allItems?.map((item: any, i) => {
             const { variants, coord } = item;
 
             const variant = getVariants(variants, coord);

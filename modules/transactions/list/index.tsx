@@ -36,6 +36,7 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
 
   const totalPage = Math.ceil((data?.total.aggregate.count || 0) / LIMIT);
 
+  console.log({data})
   const rows = data?.transactions?.map((row: any) => {
     return (
       <tr key={row.id}>

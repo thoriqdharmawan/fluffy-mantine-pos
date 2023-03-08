@@ -46,8 +46,6 @@ export default function DetailTransaction(props: Props) {
   const { id: transactionId, code, employee, created_at, payment_type, payment_method, status, products_solds, total_amount, payment_amount } =
     data?.transactions?.[0] || {};
 
-  console.log(data)
-
   const offset = payment_amount - total_amount;
 
 
@@ -80,8 +78,8 @@ export default function DetailTransaction(props: Props) {
 
                 return (
                   <tr key={idx}>
-                    <td>{product.name}</td>
-                    <td>{variants || 'Tidak ada varian'}</td>
+                    <td><Text maw="140px">{product.name}</Text></td>
+                    <td>{variants || <Text color="dimmed" fs="italic">Tidak ada varian</Text>}</td>
                     <td>{product.quantity_sold}</td>
                     <td><Text ta="right">{convertToRupiah(product.unit_price)}</Text></td>
                     <td><Text ta="right">{convertToRupiah(product.total_price)}</Text></td>
@@ -113,7 +111,7 @@ export default function DetailTransaction(props: Props) {
                 <tr>
                   <td colSpan={4}><Text >Kurang</Text></td>
                   <td align="right">
-                    <Text color="red" fw="bold">- {convertToRupiah(Math.abs(124000))}</Text>
+                    <Text color="red" fw="bold">- {convertToRupiah(Math.abs(offset))}</Text>
                   </td>
                 </tr>
               )}
