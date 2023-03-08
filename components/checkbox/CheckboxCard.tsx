@@ -4,9 +4,8 @@ const useStyles = createStyles((theme) => ({
   button: {
     display: 'flex',
     width: '100%',
-    border: `1px solid ${
-      theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[3]
-    }`,
+    border: `1px solid ${theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[3]
+      }`,
     borderRadius: theme.radius.sm,
     padding: theme.spacing.lg,
     backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.white,
@@ -25,7 +24,8 @@ interface CheckboxCardProps {
   fieldName: string;
   icon?: React.ReactNode;
   mb?: string | number;
-  error?: boolean
+  error?: boolean;
+  disabled: boolean;
 }
 
 export default function CheckboxCard({
@@ -38,6 +38,7 @@ export default function CheckboxCard({
   icon,
   mb,
   error,
+  disabled = false,
   ...others
 }: CheckboxCardProps & Omit<React.ComponentPropsWithoutRef<'button'>, keyof CheckboxCardProps>) {
   const { classes, cx } = useStyles();
@@ -48,16 +49,18 @@ export default function CheckboxCard({
       onClick={() => onChange(fieldName)}
       className={cx(classes.button, className)}
       mb={mb || 'sm'}
-      sx={{borderColor: error ? 'red' : 'none'}}
+      sx={{ borderColor: error ? 'red' : 'none' }}
+      disabled={disabled}
     >
       <Checkbox
         error={error}
         checked={checked === fieldName || false}
-        onChange={() => {}}
+        onChange={() => { }}
         tabIndex={-1}
         size="md"
         mr="xl"
         styles={{ input: { cursor: 'pointer' } }}
+        disabled={disabled}
       />
 
       <ThemeIcon variant="light" radius="md" mr="sm">

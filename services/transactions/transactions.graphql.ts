@@ -91,6 +91,9 @@ export const ADD_TRANSACTION = gql`
       }
     ) {
       affected_rows
+      returning {
+        id
+      }
     }
   }
 `;

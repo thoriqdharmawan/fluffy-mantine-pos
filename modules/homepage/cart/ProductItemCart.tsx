@@ -5,8 +5,6 @@ import {
   Image,
   Title,
   Text,
-  NumberInput,
-  TextInput,
   Badge,
   ActionIcon,
   Paper,
@@ -76,18 +74,8 @@ export default function ProductItemCart({
           <IconMinus size={12} />
         </ActionIcon>
 
-        <NumberInput
-          value={quantity}
-          radius="xl"
-          ta="right"
-          size="sm"
-          styles={{ input: { textAlign: 'center' } }}
-          defaultValue={0}
-          hideControls
-          variant="unstyled"
-          w={60}
-          max={availableStock}
-        />
+        <Text ta="center" size="sm" w={60} sx={{ userSelect: 'none' }}>{quantity}</Text>
+
         <ActionIcon
           onClick={onAdd}
           disabled={quantity >= availableStock}
@@ -98,8 +86,6 @@ export default function ProductItemCart({
           <IconPlus size={12} />
         </ActionIcon>
       </Flex>
-
-      {/* <TextInput placeholder="Tambahkan Catatan.." variant="filled" /> */}
     </Paper>
   );
 }

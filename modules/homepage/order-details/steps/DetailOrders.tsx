@@ -3,6 +3,7 @@ import { Badge, Box, Flex, Text, Image, Table } from '@mantine/core';
 import { convertToRupiah, getVariants } from '../../../../context/helpers';
 
 interface Props {
+  open: boolean;
   products: any[];
   totalPayment: number;
 }
@@ -46,7 +47,7 @@ export default function DetailOrders(props: Props) {
         melanjutkan proses pembayaran.
       </Text>
 
-      <Table horizontalSpacing="xl" highlightOnHover withBorder withColumnBorders>
+      <Table hidden={!open} horizontalSpacing="xl" highlightOnHover withBorder withColumnBorders>
         <thead>
           <tr>
             <th>Foto Produk</th>
