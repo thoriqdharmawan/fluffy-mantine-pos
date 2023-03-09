@@ -1,35 +1,21 @@
 import { gql } from '@apollo/client';
 
 export const GET_LIST_EMPLOYEES = gql`
-  query GetEmployees($companyId: uuid!, $search: String) {
+  query GetEmployees($where: employees_bool_exp!) {
     total: employees_aggregate(
-      where: {
-        companyId: { _eq: $companyId }
-        _or: { name: { _ilike: $search }, username: { _ilike: $search } }
-      }
+      where: $where
     ) {
       aggregate {
         count
       }
     }
     employees(
-      where: {
-        companyId: { _eq: $companyId }
-        _or: { name: { _ilike: $search }, username: { _ilike: $search } }
-      }
+      where: $where
+      limit: 10
       order_by: { created_at: desc }
     ) {
       id
       name
-      image
-      status
-      username
-      address
-      email
-      position {
-        id
-        name
-      }
     }
   }
 `;

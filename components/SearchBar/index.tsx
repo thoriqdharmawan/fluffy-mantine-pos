@@ -9,6 +9,7 @@ const SearchBar = (props: TextInputProps) => {
       icon={<IconSearch size={18} stroke={1.5} />}
       radius="xl"
       size="md"
+      w="100%"
       rightSection={
         <ActionIcon size={32} radius="xl" color={theme.primaryColor} variant="filled">
           {theme.dir === 'ltr' ? (

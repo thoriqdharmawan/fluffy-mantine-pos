@@ -1,27 +1,41 @@
 import { useState } from 'react';
-import { Box, Grid, ScrollArea, Text } from '@mantine/core';
+import { Text, Flex, Box, Grid, ScrollArea, ActionIcon, Menu } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { IconChevronDown, IconCircleCheck } from '@tabler/icons'
 
 import { GET_LIST_PRODUCTS_MENUS } from '../../../services/products';
 import { getPrices } from '../../../context/helpers';
 import { useUser } from '../../../context/user';
 import client from '../../../apollo-client';
 
+import { Empty } from '../../../components/empty-state';
 import SearchBar from '../../../components/SearchBar';
 import ProductCardV2 from '../../../components/cards/ProductCardV2';
 import DetailProduct from './detail/DetailProduct';
-import { Empty } from '../../../components/empty-state';
 import Loading from '../../../components/loading/Loading';
+import { DONE_WORK } from '../../../services/attendace';
 
-export default function Products() {
+interface Props {
+  employeeId: string;
+  employeeName: string;
+  attendanceId: string;
+  onDoneWork: () => void
+}
+
+export default function Products(props: Props) {
+  const { attendanceId, employeeName, onDoneWork } = props
   const { companyId } = useUser();
+
+  const [loadingDoneWork, setLoadingDoneWork] = useState(false)
   const [search, setSearch] = useState('');
   const [detail, setDetail] = useState({
     open: false,
     id: '',
   });
   const [debounce] = useDebouncedValue(search, 500);
+
+  const [doneWork] = useMutation(DONE_WORK, { client })
 
   const { data, loading } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
@@ -30,6 +44,22 @@ export default function Products() {
       search: `%${debounce}%`,
     },
   });
+
+  const handleDoneWork = () => {
+    setLoadingDoneWork(true)
+    doneWork({
+      variables: {
+        id: attendanceId,
+        money_in_drawer_end: 100000
+      }
+    }).then(() => {
+      onDoneWork()
+    }).catch(() => {
+
+    }).finally(() => {
+      setLoadingDoneWork(false)
+    })
+  }
 
   return (
     <>
@@ -40,11 +70,25 @@ export default function Products() {
             background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
           })}
         >
-          <SearchBar
-            onChange={(e) => setSearch(e.target.value)}
-            mb="lg"
-            placeholder="Cari Produk"
-          />
+          <Flex gap="lg" w="100%" mb="lg" justify="space-between" align="center">
+            <Flex justify="space-between" align="center" gap="sm">
+              <Menu shadow="md" width={200}>
+                <Text sx={{ whiteSpace: 'pre' }} variant='gradient' size="md" fw="bold">Halo, {employeeName}</Text>
+                <Menu.Target>
+                  <ActionIcon loading={loadingDoneWork} size="sm">
+                    <IconChevronDown />
+                  </ActionIcon>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item icon={<IconCircleCheck size={14} />} onClick={handleDoneWork} >Selesai Bekerja</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Flex>
+            <SearchBar
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Cari Produk"
+            />
+          </Flex>
           <Grid>
             {data?.products.map((product: any) => {
               const { max, min } = product?.product_variants_aggregate?.aggregate || {};

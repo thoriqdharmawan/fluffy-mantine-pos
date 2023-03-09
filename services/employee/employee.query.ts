@@ -9,6 +9,9 @@ interface ActionInterface {
   fetchPolicy?: FetchPolicy;
 }
 
+/**
+ * @deprecated
+ */
 const getListEmployees = async (props: ActionInterface) => {
   const result = await client.query({
     query: GET_LIST_EMPLOYEES,
