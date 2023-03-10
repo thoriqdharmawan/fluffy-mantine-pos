@@ -11,6 +11,7 @@ import { GLOBAL_FORMAT_DATE, TRANSACTION_STATUS } from '../../../context/global'
 import client from '../../../apollo-client';
 import Loading from '../../../components/loading/Loading';
 import { Empty } from '../../../components/empty-state';
+import { useUser } from '../../../context/user';
 
 interface TableOrderHistoriesProps {
   onClick: (id: string) => void;
@@ -19,14 +20,20 @@ interface TableOrderHistoriesProps {
 const LIMIT = 10;
 
 export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
+  const { companyId } = useUser()
+
   const pagination = usePagination({ total: 10, initialPage: 1 });
 
   const { data, loading, error } = useQuery(GET_LIST_TRANSACTIONS, {
     client: client,
+    skip: !companyId,
     fetchPolicy: 'cache-and-network',
     variables: {
       limit: LIMIT,
       offset: (pagination.active - 1) * LIMIT,
+      where: {
+        id: companyId ? { _eq: companyId } : undefined
+      }
     },
   });
 

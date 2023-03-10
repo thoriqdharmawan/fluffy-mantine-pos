@@ -39,6 +39,7 @@ export default function Products(props: Props) {
 
   const { data, loading } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
+    fetchPolicy: 'cache-and-network',
     variables: {
       company_id: companyId,
       search: `%${debounce}%`,
