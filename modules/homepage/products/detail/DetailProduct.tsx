@@ -119,7 +119,7 @@ export default function DetailProduct(props: Props) {
 
   const actualPrice = useMemo(() => {
     const { min_wholesale, price_wholesale, price } = selectedPV || {}
-    return quantity >= min_wholesale ? price_wholesale : price
+    return quantity >= min_wholesale ? (price_wholesale || price) : price
   }, [selectedPV, quantity])
 
   return (
