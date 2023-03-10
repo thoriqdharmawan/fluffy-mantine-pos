@@ -57,25 +57,26 @@ export default function Homepage() {
     refetchAttendance()
   }
 
-  console.log(dataAttendance)
-
   return (
     <>
       <Flex justify="space-between" w="100%" direction={{ base: 'column', md: 'row' }}>
         {working ? (
-          <Products
-            attendanceId={dataAttendance?.attendances?.[0]?.id}
-            employeeId={dataAttendance?.attendances?.[0]?.employee?.id}
-            employeeName={dataAttendance?.attendances?.[0]?.employee?.name}
-            onDoneWork={handleDoneWorking}
-          />
+          <>
+            <Products
+              attendanceId={dataAttendance?.attendances?.[0]?.id}
+              employeeId={dataAttendance?.attendances?.[0]?.employee?.id}
+              employeeName={dataAttendance?.attendances?.[0]?.employee?.name}
+              onDoneWork={handleDoneWorking}
+            />
+
+            <Box maw={460} w="100%">
+              <Cart onNextToPayment={handleNextPayment} transacitonNumber={transacitonNumber} />
+            </Box>
+          </>
         ) : (
           <CheckIn onWork={handleStartWorking} />
         )}
 
-        <Box maw={460} w="100%">
-          <Cart onNextToPayment={handleNextPayment} transacitonNumber={transacitonNumber} />
-        </Box>
       </Flex>
 
       <DetailModal
