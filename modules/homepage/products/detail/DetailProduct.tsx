@@ -16,7 +16,7 @@ import { useCart } from 'react-use-cart';
 import { useQuery } from '@apollo/client';
 
 import { GET_PRODUCT_BY_ID } from '../../../../services/products';
-import { getPrices } from '../../../../context/helpers';
+import { convertToRupiah, getPrices } from '../../../../context/helpers';
 import client from '../../../../apollo-client';
 
 import SelectVariants from '../../../../components/cards/SelectVariants';
@@ -81,6 +81,7 @@ export default function DetailProduct(props: Props) {
       const pure = JSON.parse(JSON.stringify(selected), (key, value) => {
         return key === '__typename' ? undefined : value;
       });
+
       addItem({ ...pure, productId: id, name, src: image, variants, type }, quantity);
 
       handleClose();
@@ -115,6 +116,11 @@ export default function DetailProduct(props: Props) {
     const { max, min } = product_variants_aggregate?.aggregate || {};
     return getPrices(max?.price, min?.price);
   }, [product_variants_aggregate]);
+
+  const actualPrice = useMemo(() => {
+    const { min_wholesale, price_wholesale, price } = selectedPV || {}
+    return quantity >= min_wholesale ? (price_wholesale || price) : price
+  }, [selectedPV, quantity])
 
   return (
     <Modal size={440} opened={open} onClose={handleClose}>
@@ -191,6 +197,7 @@ export default function DetailProduct(props: Props) {
               <IconPlus size={12} />
             </ActionIcon>
           </Flex>
+          <Text ta="center" fs="italic" color="dimmed" size="sm">Harga satu produk: {convertToRupiah(actualPrice || 0)}</Text>
         </>
       )}
 
@@ -198,7 +205,7 @@ export default function DetailProduct(props: Props) {
         onClick={handleAddToCart}
         w="100%"
         radius="lg"
-        mt="xl"
+        mt="sm"
         disabled={loading || availableStock <= 0}
         leftIcon={<IconShoppingCart size={18} />}
       >

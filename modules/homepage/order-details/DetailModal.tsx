@@ -89,7 +89,11 @@ export default function DetailModal(props: Props) {
   };
 
   const totalPayment = useMemo(() => {
-    return data.reduce((acc, cur) => acc + cur.itemTotal, 0);
+    const actualPrices = data.map(({ quantity, min_wholesale, price_wholesale, itemTotal }) => {
+      return quantity >= min_wholesale ? price_wholesale * quantity : itemTotal
+    })
+
+    return actualPrices.reduce((acc, cur) => acc + cur, 0);
   }, [data]);
 
   const handleCreateTransaction = () => {

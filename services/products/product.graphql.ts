@@ -90,6 +90,8 @@ export const GET_PRODUCT_BY_ID = gql`
         coord
         is_primary
         price
+        price_wholesale
+        min_wholesale
         sku
         status
         stock

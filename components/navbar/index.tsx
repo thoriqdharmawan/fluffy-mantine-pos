@@ -29,8 +29,8 @@ const useStyles = createStyles((theme) => ({
 const data = [
   { icon: IconHome2, label: 'Home Page', href: '/' },
   { icon: IconShoppingCart, label: 'Riwayat Transaksi', href: '/transactions' },
-  { icon: IconList, label: 'Daftar Produk', href: '/products' },
-  { icon: IconCash, label: 'Pendapatan', href: '/incomes' },
+  // { icon: IconList, label: 'Daftar Produk', href: '/products' },
+  // { icon: IconCash, label: 'Pendapatan', href: '/incomes' },
 ];
 
 export default function Navbar() {

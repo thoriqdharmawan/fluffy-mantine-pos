@@ -41,10 +41,11 @@ export default function Cart(props: Props) {
             Kosongkan Keranjang
           </Button>
         </Flex>
-
         <Box px="md">
           {allItems?.map((item: any, i) => {
-            const { variants, coord } = item;
+            const { variants, coord, min_wholesale, price_wholesale, price, quantity } = item || {}
+
+            const actualPrice = quantity >= min_wholesale ? price_wholesale : price
 
             const variant = getVariants(variants, coord);
 
@@ -52,13 +53,13 @@ export default function Cart(props: Props) {
               <ProductItemCart
                 key={i}
                 id={item.id}
-                quantity={item.quantity || 0}
+                quantity={quantity || 0}
                 name={item.name}
                 src={item.src}
-                price={convertToRupiah(item.price || 0)}
+                price={convertToRupiah(actualPrice || 0)}
                 variants={variant}
-                onAdd={() => updateItemQuantity(item.id, (item.quantity || 0) + 1)}
-                onSubtract={() => updateItemQuantity(item.id, (item.quantity || 0) - 1)}
+                onAdd={() => updateItemQuantity(item.id, (quantity || 0) + 1)}
+                onSubtract={() => updateItemQuantity(item.id, (quantity || 0) - 1)}
                 onRemove={() => removeItem(item.id)}
               />
             );
