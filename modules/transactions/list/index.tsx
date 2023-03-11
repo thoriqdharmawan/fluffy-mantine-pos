@@ -32,7 +32,7 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
       limit: LIMIT,
       offset: (pagination.active - 1) * LIMIT,
       where: {
-        id: companyId ? { _eq: companyId } : undefined
+        companyId: companyId ? { _eq: companyId } : undefined
       }
     },
   });

@@ -12,6 +12,7 @@ import PaymentMethod from './steps/payment-method/PaymentMethod';
 import PayNow from './steps/PayNow';
 import { addTransaction, decreaseStock } from '../../../services/transactions';
 import { getVariants } from '../../../context/helpers';
+import { useUser } from '../../../context/user';
 
 type Props = {
   open: boolean;
@@ -19,6 +20,7 @@ type Props = {
   data: any[];
   refetchTotalTransaction: () => void;
   transactionNumber: string;
+  attendance: any;
 };
 
 interface Customer {
@@ -51,8 +53,9 @@ const getNextLabel = (active: number) => {
 };
 
 export default function DetailModal(props: Props) {
-  const { open, onClose, data, refetchTotalTransaction, transactionNumber } = props;
+  const { open, onClose, data, refetchTotalTransaction, transactionNumber, attendance } = props;
   const { emptyCart } = useCart();
+  const { companyId } = useUser()
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
   const [transactionId, setTransactionId] = useState<string>('')
@@ -113,7 +116,8 @@ export default function DetailModal(props: Props) {
       payment_type: values.paymentType,
       status: offset >= 0 ? 'COMPLETED' : 'INCOMPLETE',
       // ! hardcoded
-      employeeId: 'ce879f7a-5190-48f2-9462-24acdd275d20',
+      employeeId: attendance?.employee?.id,
+      companyId: companyId,
       // merchantId: null,
       products_solds: data?.map((product) => {
         const variants = getVariants(product.variants, product.coord);

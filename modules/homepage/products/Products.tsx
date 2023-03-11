@@ -20,7 +20,7 @@ interface Props {
   employeeId: string;
   employeeName: string;
   attendanceId: string;
-  onDoneWork: () => void
+  onDoneWork: () => void;
 }
 
 export default function Products(props: Props) {
