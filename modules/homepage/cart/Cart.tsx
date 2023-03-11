@@ -45,7 +45,7 @@ export default function Cart(props: Props) {
           {allItems?.map((item: any, i) => {
             const { variants, coord, min_wholesale, price_wholesale, price, quantity } = item || {}
 
-            const actualPrice = quantity >= min_wholesale ? price_wholesale : price
+            const actualPrice = quantity >= min_wholesale ? (price_wholesale || price) : price
 
             const variant = getVariants(variants, coord);
 
