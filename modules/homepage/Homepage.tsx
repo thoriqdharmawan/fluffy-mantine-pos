@@ -14,8 +14,10 @@ import { GET_ACTIVE_ATTENDACE } from '../../services/attendace';
 import { useUser } from '../../context/user';
 
 export default function Homepage() {
+  const [attendance, setAttendance] = useState()
   const { companyId } = useUser()
   const [working, setWorking] = useState(true)
+
   const [detail, setDetail] = useState({
     open: false,
     data: [],
@@ -27,6 +29,7 @@ export default function Homepage() {
     variables: { companyId },
     onCompleted: (data) => {
       setWorking(data?.total.aggregate.count > 0)
+      setAttendance(data?.attendances?.[0])
     }
   });
 
@@ -85,6 +88,7 @@ export default function Homepage() {
         data={detail.data}
         refetchTotalTransaction={refetch}
         transactionNumber={transacitonNumber}
+        attendance={attendance}
       />
     </>
   );

@@ -64,6 +64,7 @@ export const GET_TOTAL_TRANSACTIONS_TODAY = gql`
 export const ADD_TRANSACTION = gql`
   mutation AddTransactions(
     $customerId: Int
+    $companyId: uuid!
     $payment_amount: numeric
     $tax: numeric
     $total_amount: numeric
@@ -78,6 +79,7 @@ export const ADD_TRANSACTION = gql`
     insert_transactions(
       objects: {
         customerId: $customerId
+        companyId: $companyId
         payment_amount: $payment_amount
         tax: $tax
         total_amount: $total_amount
