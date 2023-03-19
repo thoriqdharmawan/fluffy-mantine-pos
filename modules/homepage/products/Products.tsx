@@ -15,6 +15,7 @@ import SearchBar from '../../../components/SearchBar';
 import ProductCardV2 from '../../../components/cards/ProductCardV2';
 import DetailProduct from './detail/DetailProduct';
 import Loading from '../../../components/loading/Loading';
+import ModalCheckout from '../attendance/ModalCheckout';
 
 interface Props {
   employeeId: string;
@@ -29,6 +30,7 @@ export default function Products(props: Props) {
   const { attendanceId, employeeName, onDoneWork } = props
   const { companyId } = useUser();
 
+  const [openCheckout, setOpenCheckout] = useState<boolean>(false)
   const [loadingDoneWork, setLoadingDoneWork] = useState(false)
   const [search, setSearch] = useState('');
   const [detail, setDetail] = useState({
@@ -37,7 +39,6 @@ export default function Products(props: Props) {
   });
   const [debounce] = useDebouncedValue(search, 500);
 
-  const [doneWork] = useMutation(DONE_WORK, { client })
 
   const { data, loading, fetchMore } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
@@ -50,19 +51,7 @@ export default function Products(props: Props) {
     },
   });
 
-  const handleDoneWork = () => {
-    setLoadingDoneWork(true)
-    doneWork({
-      variables: {
-        id: attendanceId,
-        money_in_drawer_end: 100000
-      }
-    }).then(() => {
-      onDoneWork()
-    }).finally(() => {
-      setLoadingDoneWork(false)
-    })
-  }
+  
 
   const fetchMoreData = () => {
     fetchMore({
@@ -100,7 +89,8 @@ export default function Products(props: Props) {
                   </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item icon={<IconCircleCheck size={14} />} onClick={handleDoneWork} >Selesai Bekerja</Menu.Item>
+                  {/* <Menu.Item icon={<IconCircleCheck size={14} />} onClick={handleDoneWork} >Selesai Bekerja</Menu.Item> */}
+                  <Menu.Item icon={<IconCircleCheck size={14} />} onClick={() => setOpenCheckout(true)} >Selesai Bekerja</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
             </Flex>
@@ -148,6 +138,8 @@ export default function Products(props: Props) {
         id={detail.id}
         onClose={() => setDetail({ open: false, id: '' })}
       />
+
+      <ModalCheckout attendanceId={attendanceId} opened={openCheckout} name={employeeName} onClose={() => setOpenCheckout(false)} onDoneWork={onDoneWork} />
     </>
   );
 }
