@@ -14,9 +14,9 @@ import { GET_ACTIVE_ATTENDACE } from '../../services/attendace';
 import { useUser } from '../../context/user';
 
 export default function Homepage() {
-  const [attendance, setAttendance] = useState()
-  const { companyId } = useUser()
-  const [working, setWorking] = useState(true)
+  const [attendance, setAttendance] = useState();
+  const { companyId } = useUser();
+  const [working, setWorking] = useState(true);
 
   const [detail, setDetail] = useState({
     open: false,
@@ -28,9 +28,9 @@ export default function Homepage() {
     skip: !companyId,
     variables: { companyId },
     onCompleted: (data) => {
-      setWorking(data?.total.aggregate.count > 0)
-      setAttendance(data?.attendances?.[0])
-    }
+      setWorking(data?.total.aggregate.count > 0);
+      setAttendance(data?.attendances?.[0]);
+    },
   });
 
   const { data, refetch } = useQuery(GET_TOTAL_TRANSACTIONS_TODAY, {
@@ -51,14 +51,14 @@ export default function Homepage() {
   const transacitonNumber = `#${(data?.total.aggregate.count || 0) + 1}`;
 
   const handleStartWorking = () => {
-    setWorking(true)
-    refetchAttendance()
-  }
+    setWorking(true);
+    refetchAttendance();
+  };
 
   const handleDoneWorking = () => {
-    setWorking(false)
-    refetchAttendance()
-  }
+    setWorking(false);
+    refetchAttendance();
+  };
 
   return (
     <>
@@ -79,7 +79,6 @@ export default function Homepage() {
         ) : (
           <CheckIn onWork={handleStartWorking} />
         )}
-
       </Flex>
 
       <DetailModal

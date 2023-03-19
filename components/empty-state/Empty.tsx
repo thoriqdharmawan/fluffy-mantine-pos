@@ -4,10 +4,10 @@ import { Box, Flex, Image, Text, Title } from '@mantine/core';
 type Props = {
   title?: string;
   label?: string;
-  action?: React.ReactNode
+  action?: React.ReactNode;
 };
 
-export default function Empty({title, label, action}: Props) {
+export default function Empty({ title, label, action }: Props) {
   const theme = useTheme();
 
   return (

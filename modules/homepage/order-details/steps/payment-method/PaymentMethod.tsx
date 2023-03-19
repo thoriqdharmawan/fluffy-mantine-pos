@@ -113,10 +113,13 @@ export default function PaymentMethod(props: Props) {
 
   return (
     <Box p="md">
-      <SimpleGrid breakpoints={[
-        { minWidth: 'xs', cols: 1 },
-        { minWidth: 'sm', cols: 2 },
-      ]} spacing="xl">
+      <SimpleGrid
+        breakpoints={[
+          { minWidth: 'xs', cols: 1 },
+          { minWidth: 'sm', cols: 2 },
+        ]}
+        spacing="xl"
+      >
         <div>
           <Text mb="sm" ta="center" size="md" fw="bold">
             Detail Pelanggan
@@ -128,7 +131,10 @@ export default function PaymentMethod(props: Props) {
             mb="sm"
             data={[
               { value: '0', label: 'Umum' },
-              ...customers.data?.map((customer) => ({ value: `${customer.id}`, label: customer.name })),
+              ...customers.data?.map((customer) => ({
+                value: `${customer.id}`,
+                label: customer.name,
+              })),
             ]}
             {...form.getInputProps('customer.name')}
             onChange={handleChangeCustomer}

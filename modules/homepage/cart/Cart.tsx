@@ -43,9 +43,9 @@ export default function Cart(props: Props) {
         </Flex>
         <Box px="md">
           {allItems?.map((item: any, i) => {
-            const { variants, coord, min_wholesale, price_wholesale, price, quantity } = item || {}
+            const { variants, coord, min_wholesale, price_wholesale, price, quantity } = item || {};
 
-            const actualPrice = quantity >= min_wholesale ? (price_wholesale || price) : price
+            const actualPrice = quantity >= min_wholesale ? price_wholesale || price : price;
 
             const variant = getVariants(variants, coord);
 

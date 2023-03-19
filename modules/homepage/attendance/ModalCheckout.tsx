@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Button, Modal, NumberInput, TextInput, Text } from '@mantine/core'
+import React, { useState } from 'react';
+import { Button, Modal, NumberInput, TextInput, Text } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
 import { useMutation } from '@apollo/client';
 
@@ -20,48 +20,52 @@ interface FormValues {
 }
 
 export default function ModalCheckout(props: Props) {
-  const { opened, attendanceId, name, onClose, onDoneWork } = props
-  const [loading, setLoading] = useState<boolean>(false)
+  const { opened, attendanceId, name, onClose, onDoneWork } = props;
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const [doneWork] = useMutation(DONE_WORK, { client })
+  const [doneWork] = useMutation(DONE_WORK, { client });
 
   const form = useForm<FormValues>({
     initialValues: {
       money_in_drawer_end: undefined,
-      note_end: undefined
+      note_end: undefined,
     },
     validate: {
-      money_in_drawer_end: isNotEmpty("Bagian ini diperlukan")
-    }
-  })
+      money_in_drawer_end: isNotEmpty('Bagian ini diperlukan'),
+    },
+  });
 
   const handleClose = () => {
-    onDoneWork()
-    onClose()
-    form.reset()
-  }
+    onDoneWork();
+    onClose();
+    form.reset();
+  };
 
   const handleSubmit = () => {
-    const { hasErrors } = form.validate()
+    const { hasErrors } = form.validate();
 
     if (!hasErrors) {
-      setLoading(true)
+      setLoading(true);
       doneWork({
         variables: {
           id: attendanceId,
-          money_in_drawer_end: form.values.money_in_drawer_end
-        }
-      }).then(() => {
-        handleClose()
-      }).finally(() => {
-        setLoading(false)
+          money_in_drawer_end: form.values.money_in_drawer_end,
+        },
       })
+        .then(() => {
+          handleClose();
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  }
+  };
 
   return (
     <Modal opened={opened} onClose={onClose}>
-      <Text fw="bold" size="xl" mb="xl">{name}</Text>
+      <Text fw="bold" size="xl" mb="xl">
+        {name}
+      </Text>
 
       <NumberInput
         label="Uang di Laci Saat Ini"
@@ -86,8 +90,9 @@ export default function ModalCheckout(props: Props) {
         {...form.getInputProps('note_end')}
       />
 
-      <Button loading={loading} onClick={handleSubmit} display="block" ml="auto" mt={44}>Selesaikan Pekerjaan Sekarang 🚀🚀</Button>
+      <Button loading={loading} onClick={handleSubmit} display="block" ml="auto" mt={44}>
+        Selesaikan Pekerjaan Sekarang 🚀🚀
+      </Button>
     </Modal>
-
-  )
+  );
 }

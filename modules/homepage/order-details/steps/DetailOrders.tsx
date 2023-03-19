@@ -15,8 +15,8 @@ export default function DetailOrders(props: Props) {
     const variants = getVariants(product.variants, product.coord);
     const isVariant = product.type === 'VARIANT';
 
-    const isWholesale = product.quantity >= product.min_wholesale
-    const actualPrice = isWholesale ? product.price_wholesale : product.price
+    const isWholesale = product.quantity >= product.min_wholesale;
+    const actualPrice = isWholesale ? product.price_wholesale : product.price;
 
     return (
       <tr key={product.id}>
@@ -28,7 +28,9 @@ export default function DetailOrders(props: Props) {
           <Flex gap="sm">
             {isVariant ? (
               variants?.map((variant, i) => (
-                <Badge key={i} sx={{ textTransform: 'capitalize' }}>{variant}</Badge>
+                <Badge key={i} sx={{ textTransform: 'capitalize' }}>
+                  {variant}
+                </Badge>
               ))
             ) : (
               <Text fs="italic" color="dimmed">
@@ -37,9 +39,17 @@ export default function DetailOrders(props: Props) {
             )}
           </Flex>
         </td>
-        <td><Text ta="center">{product.quantity}</Text></td>
-        <td><Text ta="right">{convertToRupiah(actualPrice)}</Text></td>
-        <td><Text ta="right">{convertToRupiah(isWholesale ? actualPrice * product.quantity : product.itemTotal)}</Text></td>
+        <td>
+          <Text ta="center">{product.quantity}</Text>
+        </td>
+        <td>
+          <Text ta="right">{convertToRupiah(actualPrice)}</Text>
+        </td>
+        <td>
+          <Text ta="right">
+            {convertToRupiah(isWholesale ? actualPrice * product.quantity : product.itemTotal)}
+          </Text>
+        </td>
       </tr>
     );
   });
@@ -71,7 +81,9 @@ export default function DetailOrders(props: Props) {
               </Text>
             </td>
             <td>
-              <Text fw={700} ta="right">{convertToRupiah(totalPayment)}</Text>
+              <Text fw={700} ta="right">
+                {convertToRupiah(totalPayment)}
+              </Text>
             </td>
           </tr>
         </tbody>

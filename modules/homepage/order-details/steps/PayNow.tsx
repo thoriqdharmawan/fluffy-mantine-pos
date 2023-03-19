@@ -20,9 +20,8 @@ export default function PayNow(props: Props) {
   };
 
   const isErrorNominal = error && !form.values.paymentAmount;
-  
-  const offset = (form.values.paymentAmount || 0) - totalPayment;
 
+  const offset = (form.values.paymentAmount || 0) - totalPayment;
 
   return (
     <Box>
@@ -68,7 +67,9 @@ export default function PayNow(props: Props) {
               <tr>
                 <td>Kembali</td>
                 <td align="right">
-                  <Text color="green" size="md" fw="bold">+ {convertToRupiah(offset)}</Text>
+                  <Text color="green" size="md" fw="bold">
+                    + {convertToRupiah(offset)}
+                  </Text>
                 </td>
               </tr>
             )}
@@ -76,7 +77,9 @@ export default function PayNow(props: Props) {
               <tr>
                 <td>Kurang</td>
                 <td align="right">
-                  <Text color="red" size="md" fw="bold">- {convertToRupiah(Math.abs(offset))}</Text>
+                  <Text color="red" size="md" fw="bold">
+                    - {convertToRupiah(Math.abs(offset))}
+                  </Text>
                 </td>
               </tr>
             )}

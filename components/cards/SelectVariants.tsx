@@ -15,11 +15,7 @@ export default function SelectVariants({ title, variants, value, onChange }: Pro
       </Title>
       <Chip.Group value={value} onChange={onChange} position="left">
         {variants?.map((variant, idx) => (
-          <Chip
-            checked={value === variant}
-            key={idx}
-            value={variant}
-          >
+          <Chip checked={value === variant} key={idx} value={variant}>
             {variant}
           </Chip>
         ))}

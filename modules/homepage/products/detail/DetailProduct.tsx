@@ -118,9 +118,9 @@ export default function DetailProduct(props: Props) {
   }, [product_variants_aggregate]);
 
   const actualPrice = useMemo(() => {
-    const { min_wholesale, price_wholesale, price } = selectedPV || {}
-    return quantity >= min_wholesale ? (price_wholesale || price) : price
-  }, [selectedPV, quantity])
+    const { min_wholesale, price_wholesale, price } = selectedPV || {};
+    return quantity >= min_wholesale ? price_wholesale || price : price;
+  }, [selectedPV, quantity]);
 
   return (
     <Modal size={440} opened={open} onClose={handleClose}>
@@ -197,7 +197,9 @@ export default function DetailProduct(props: Props) {
               <IconPlus size={12} />
             </ActionIcon>
           </Flex>
-          <Text ta="center" fs="italic" color="dimmed" size="sm">Harga satu produk: {convertToRupiah(actualPrice || 0)}</Text>
+          <Text ta="center" fs="italic" color="dimmed" size="sm">
+            Harga satu produk: {convertToRupiah(actualPrice || 0)}
+          </Text>
         </>
       )}
 
@@ -218,9 +220,7 @@ export default function DetailProduct(props: Props) {
 const Section = ({ label, value }: { label: string; value: string | number }) => {
   return (
     <Box mb="xl">
-      <Title order={6}>
-        {label}
-      </Title>
+      <Title order={6}>{label}</Title>
       <Text fz="sm" mb="sm">
         {value}
       </Text>

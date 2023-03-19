@@ -2,12 +2,14 @@ import { gql } from '@apollo/client';
 
 export const GET_ACTIVE_ATTENDACE = gql`
   query GetActiveAttendances($companyId: uuid!) {
-    total: attendances_aggregate (where: {companyId: {_eq: $companyId}, updated_at: {_is_null: true}}) {
+    total: attendances_aggregate(
+      where: { companyId: { _eq: $companyId }, updated_at: { _is_null: true } }
+    ) {
       aggregate {
         count
       }
     }
-    attendances(where: {companyId: {_eq: $companyId}, updated_at: {_is_null: true}}) {
+    attendances(where: { companyId: { _eq: $companyId }, updated_at: { _is_null: true } }) {
       id
       employee {
         id

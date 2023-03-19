@@ -46,12 +46,7 @@ export const GET_LIST_PRODUCTS = gql`
   }
 `;
 export const GET_LIST_PRODUCTS_MENUS = gql`
-  query GetListProductMenus(
-    $company_id: uuid!
-    $search: String
-    $limit: Int
-    $offset: Int
-  ) {
+  query GetListProductMenus($company_id: uuid!, $search: String, $limit: Int, $offset: Int) {
     total: products_aggregate(
       where: { company: { id: { _eq: $company_id } }, name: { _ilike: $search } }
     ) {

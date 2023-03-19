@@ -1,13 +1,6 @@
 import { useState } from 'react';
 
-import {
-  createStyles,
-  Avatar,
-  UnstyledButton,
-  Group,
-  Text,
-  Menu,
-} from '@mantine/core';
+import { createStyles, Avatar, UnstyledButton, Group, Text, Menu } from '@mantine/core';
 
 import { IconChevronDown, IconLogout } from '@tabler/icons';
 import { SignOut } from '../../services/authentication';

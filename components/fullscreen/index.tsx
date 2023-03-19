@@ -18,7 +18,11 @@ export function Fullscreen({}: Props) {
           color: theme.colorScheme === 'dark' ? theme.colors.yellow[4] : theme.colors.blue[6],
         })}
       >
-        {fullscreen ? <IconMinimize size={20} stroke={1.5} /> : <IconMaximize size={20} stroke={1.5} />}
+        {fullscreen ? (
+          <IconMinimize size={20} stroke={1.5} />
+        ) : (
+          <IconMaximize size={20} stroke={1.5} />
+        )}
       </ActionIcon>
     </Group>
   );

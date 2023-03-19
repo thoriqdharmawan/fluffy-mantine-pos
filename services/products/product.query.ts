@@ -1,17 +1,12 @@
 import { type FetchPolicy } from '@apollo/client';
 import client from '../../apollo-client';
 
-import {
-  GET_LIST_PRODUCTS,
-  GET_LIST_PRODUCT_VARIANTS,
-  GET_PRODUCT_BY_ID,
-} from './product.graphql';
+import { GET_LIST_PRODUCTS, GET_LIST_PRODUCT_VARIANTS, GET_PRODUCT_BY_ID } from './product.graphql';
 
 interface ProductActionInterface {
   variables: Record<string, any>;
   fetchPolicy?: FetchPolicy;
 }
-
 
 const getListProducts = async (props: ProductActionInterface) => {
   const result = await client.query({

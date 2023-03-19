@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppShell, useMantineTheme} from '@mantine/core';
+import { AppShell, useMantineTheme } from '@mantine/core';
 
 import Navbar from '../components/navbar';
 
