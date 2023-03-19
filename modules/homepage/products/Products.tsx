@@ -31,14 +31,12 @@ export default function Products(props: Props) {
   const { companyId } = useUser();
 
   const [openCheckout, setOpenCheckout] = useState<boolean>(false)
-  const [loadingDoneWork, setLoadingDoneWork] = useState(false)
   const [search, setSearch] = useState('');
   const [detail, setDetail] = useState({
     open: false,
     id: '',
   });
   const [debounce] = useDebouncedValue(search, 500);
-
 
   const { data, loading, fetchMore } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
@@ -50,8 +48,6 @@ export default function Products(props: Props) {
       offset: 0
     },
   });
-
-  
 
   const fetchMoreData = () => {
     fetchMore({
@@ -84,12 +80,11 @@ export default function Products(props: Props) {
               <Menu shadow="md" width={200}>
                 <Text sx={{ whiteSpace: 'pre' }} variant='gradient' size="md" fw="bold">Halo, {employeeName}</Text>
                 <Menu.Target>
-                  <ActionIcon loading={loadingDoneWork} size="sm">
+                  <ActionIcon size="sm">
                     <IconChevronDown />
                   </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  {/* <Menu.Item icon={<IconCircleCheck size={14} />} onClick={handleDoneWork} >Selesai Bekerja</Menu.Item> */}
                   <Menu.Item icon={<IconCircleCheck size={14} />} onClick={() => setOpenCheckout(true)} >Selesai Bekerja</Menu.Item>
                 </Menu.Dropdown>
               </Menu>
