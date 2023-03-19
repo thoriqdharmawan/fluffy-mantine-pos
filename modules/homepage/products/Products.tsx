@@ -1,20 +1,20 @@
 import { useState } from 'react';
-import { Text, Flex, Box, Grid, ScrollArea, ActionIcon, Menu } from '@mantine/core';
+import { Text, Flex, Box, Grid, ScrollArea, ActionIcon, Menu, Button, Center } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useMutation, useQuery } from '@apollo/client';
 import { IconChevronDown, IconCircleCheck } from '@tabler/icons'
 
+import { DONE_WORK } from '../../../services/attendace';
+import { Empty } from '../../../components/empty-state';
 import { GET_LIST_PRODUCTS_MENUS } from '../../../services/products';
 import { getPrices } from '../../../context/helpers';
 import { useUser } from '../../../context/user';
 import client from '../../../apollo-client';
 
-import { Empty } from '../../../components/empty-state';
 import SearchBar from '../../../components/SearchBar';
 import ProductCardV2 from '../../../components/cards/ProductCardV2';
 import DetailProduct from './detail/DetailProduct';
 import Loading from '../../../components/loading/Loading';
-import { DONE_WORK } from '../../../services/attendace';
 
 interface Props {
   employeeId: string;
@@ -22,6 +22,8 @@ interface Props {
   attendanceId: string;
   onDoneWork: () => void;
 }
+
+const LIMIT = 12
 
 export default function Products(props: Props) {
   const { attendanceId, employeeName, onDoneWork } = props
@@ -37,12 +39,14 @@ export default function Products(props: Props) {
 
   const [doneWork] = useMutation(DONE_WORK, { client })
 
-  const { data, loading } = useQuery(GET_LIST_PRODUCTS_MENUS, {
+  const { data, loading, fetchMore } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
     fetchPolicy: 'cache-and-network',
     variables: {
       company_id: companyId,
       search: `%${debounce}%`,
+      limit: LIMIT,
+      offset: 0
     },
   });
 
@@ -55,16 +59,31 @@ export default function Products(props: Props) {
       }
     }).then(() => {
       onDoneWork()
-    }).catch(() => {
-
     }).finally(() => {
       setLoadingDoneWork(false)
     })
   }
 
+  const fetchMoreData = () => {
+    fetchMore({
+      variables: {
+        offset: data.products.length,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) return prev
+        return Object.assign({}, prev, {
+          products: [
+            ...prev.products,
+            ...fetchMoreResult.products,
+          ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
+        })
+      },
+    })
+  }
+
   return (
     <>
-      <ScrollArea sx={{ height: '100vh', width: '100%' }} offsetScrollbars type="auto">
+      <ScrollArea id="scrollableDiv" sx={{ height: '100vh', width: '100%' }} offsetScrollbars type="auto">
         <Box
           p="lg"
           sx={(theme) => ({
@@ -91,7 +110,7 @@ export default function Products(props: Props) {
             />
           </Flex>
           <Grid>
-            {data?.products.map((product: any) => {
+            {!loading && data?.products.map((product: any) => {
               const { max, min } = product?.product_variants_aggregate?.aggregate || {};
               const prices = getPrices(max?.price, min?.price);
 
@@ -107,14 +126,7 @@ export default function Products(props: Props) {
                 </Grid.Col>
               );
             })}
-            {loading &&
-              new Array(12).fill(0).map((i, idx) => {
-                return (
-                  <Grid.Col key={`${i}${idx}`} sm={6} lg={4} xl={3}>
-                    <Loading width="100%" height={242} count={1} />
-                  </Grid.Col>
-                );
-              })}
+            {loading && (<Loader />)}
           </Grid>
           {!loading && data?.total.aggregate.count === 0 && (
             <Empty
@@ -123,6 +135,12 @@ export default function Products(props: Props) {
             />
           )}
         </Box>
+
+        <Center my={68}>
+          <Button hidden={data?.products.length >= data?.total.aggregate.count} onClick={fetchMoreData} variant="outline">
+            Tampilkan Lebih Banyak Produk
+          </Button>
+        </Center>
       </ScrollArea>
 
       <DetailProduct
@@ -132,6 +150,20 @@ export default function Products(props: Props) {
       />
     </>
   );
+}
+
+const Loader = () => {
+  return (
+    <>
+      {new Array(LIMIT).fill(0).map((i, idx) => {
+        return (
+          <Grid.Col key={`${i}${idx}`} sm={6} lg={4} xl={3}>
+            <Loading width="100%" height={242} count={1} />
+          </Grid.Col>
+        );
+      })}
+    </>
+  )
 }
 
 const EMPTY_PRODUCT = {
