@@ -18,6 +18,7 @@ interface Props {
 
 export default function CheckIn(props: Props) {
   const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState<boolean>(false)
   const [debounce] = useDebouncedValue(search, 500)
 
   const [employees, setEmployees] = useState([])
@@ -63,6 +64,7 @@ export default function CheckIn(props: Props) {
     const { hasErrors } = form.validate()
 
     if (!hasErrors) {
+      setLoading(true)
       const { values } = form
 
       startWork({
@@ -87,7 +89,7 @@ export default function CheckIn(props: Props) {
           icon: <IconExclamationMark />,
           color: 'red',
         });
-      })
+      }).finally(() => setLoading(false))
     }
   }
 
@@ -126,7 +128,7 @@ export default function CheckIn(props: Props) {
           {...form.getInputProps('note')}
         />
 
-        <Button onClick={handleStartWork} size='md' mt="lg">
+        <Button loading={loading} onClick={handleStartWork} size='md' mt="lg">
           Mulai Bekerja 💪💪
         </Button>
       </Box>
