@@ -1,14 +1,5 @@
 import { useMemo } from 'react';
-import {
-  Box,
-  Flex,
-  Image,
-  Title,
-  Text,
-  Badge,
-  ActionIcon,
-  Paper,
-} from '@mantine/core';
+import { Box, Flex, Image, Title, Text, Badge, ActionIcon, Paper } from '@mantine/core';
 import { IconPlus, IconMinus, IconTrash } from '@tabler/icons';
 import { useCart } from 'react-use-cart';
 
@@ -43,13 +34,7 @@ export default function ProductItemCart({
     }, [id]) || 0;
 
   return (
-    <Paper
-      p="lg"
-      mb="xl"
-      h="auto"
-      shadow="sm"
-      radius="md"
-    >
+    <Paper p="lg" mb="xl" h="auto" shadow="sm" radius="md">
       <Flex justify="start" mb="sm">
         <Image radius="sm" src={src} withPlaceholder width={60} height={60} mr="sm" />
         <Box>
@@ -74,7 +59,9 @@ export default function ProductItemCart({
           <IconMinus size={12} />
         </ActionIcon>
 
-        <Text ta="center" size="sm" w={60} sx={{ userSelect: 'none' }}>{quantity}</Text>
+        <Text ta="center" size="sm" w={60} sx={{ userSelect: 'none' }}>
+          {quantity}
+        </Text>
 
         <ActionIcon
           onClick={onAdd}

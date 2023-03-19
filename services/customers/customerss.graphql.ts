@@ -7,7 +7,7 @@ const GET_LIST_CUSTOMERS = gql`
         count
       }
     }
-    
+
     customers {
       id
       name

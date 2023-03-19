@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Text, Flex, Box, Grid, ScrollArea, ActionIcon, Menu, Button, Center } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { useMutation, useQuery } from '@apollo/client';
-import { IconChevronDown, IconCircleCheck } from '@tabler/icons'
+import { IconChevronDown, IconCircleCheck } from '@tabler/icons';
 
 import { DONE_WORK } from '../../../services/attendace';
 import { Empty } from '../../../components/empty-state';
@@ -24,13 +24,13 @@ interface Props {
   onDoneWork: () => void;
 }
 
-const LIMIT = 12
+const LIMIT = 12;
 
 export default function Products(props: Props) {
-  const { attendanceId, employeeName, onDoneWork } = props
+  const { attendanceId, employeeName, onDoneWork } = props;
   const { companyId } = useUser();
 
-  const [openCheckout, setOpenCheckout] = useState<boolean>(false)
+  const [openCheckout, setOpenCheckout] = useState<boolean>(false);
   const [search, setSearch] = useState('');
   const [detail, setDetail] = useState({
     open: false,
@@ -45,7 +45,7 @@ export default function Products(props: Props) {
       company_id: companyId,
       search: `%${debounce}%`,
       limit: LIMIT,
-      offset: 0
+      offset: 0,
     },
   });
 
@@ -55,20 +55,24 @@ export default function Products(props: Props) {
         offset: data.products.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev
+        if (!fetchMoreResult) return prev;
         return Object.assign({}, prev, {
-          products: [
-            ...prev.products,
-            ...fetchMoreResult.products,
-          ].filter((v, i, a) => a.findIndex(t => t.id === v.id) === i),
-        })
+          products: [...prev.products, ...fetchMoreResult.products].filter(
+            (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+          ),
+        });
       },
-    })
-  }
+    });
+  };
 
   return (
     <>
-      <ScrollArea id="scrollableDiv" sx={{ height: '100vh', width: '100%' }} offsetScrollbars type="auto">
+      <ScrollArea
+        id="scrollableDiv"
+        sx={{ height: '100vh', width: '100%' }}
+        offsetScrollbars
+        type="auto"
+      >
         <Box
           p="lg"
           sx={(theme) => ({
@@ -78,40 +82,45 @@ export default function Products(props: Props) {
           <Flex gap="lg" w="100%" mb="lg" justify="space-between" align="center">
             <Flex justify="space-between" align="center" gap="sm">
               <Menu shadow="md" width={200}>
-                <Text sx={{ whiteSpace: 'pre' }} variant='gradient' size="md" fw="bold">Halo, {employeeName}</Text>
+                <Text sx={{ whiteSpace: 'pre' }} variant="gradient" size="md" fw="bold">
+                  Halo, {employeeName}
+                </Text>
                 <Menu.Target>
                   <ActionIcon size="sm">
                     <IconChevronDown />
                   </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item icon={<IconCircleCheck size={14} />} onClick={() => setOpenCheckout(true)} >Selesai Bekerja</Menu.Item>
+                  <Menu.Item
+                    icon={<IconCircleCheck size={14} />}
+                    onClick={() => setOpenCheckout(true)}
+                  >
+                    Selesai Bekerja
+                  </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
             </Flex>
-            <SearchBar
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari Produk"
-            />
+            <SearchBar onChange={(e) => setSearch(e.target.value)} placeholder="Cari Produk" />
           </Flex>
           <Grid>
-            {!loading && data?.products.map((product: any) => {
-              const { max, min } = product?.product_variants_aggregate?.aggregate || {};
-              const prices = getPrices(max?.price, min?.price);
+            {!loading &&
+              data?.products.map((product: any) => {
+                const { max, min } = product?.product_variants_aggregate?.aggregate || {};
+                const prices = getPrices(max?.price, min?.price);
 
-              return (
-                <Grid.Col key={product.id} sm={6} lg={4} xl={3}>
-                  <ProductCardV2
-                    key={product.id}
-                    src={product.image}
-                    name={product.name}
-                    price={prices}
-                    onClick={() => setDetail({ open: true, id: product.id })}
-                  />
-                </Grid.Col>
-              );
-            })}
-            {loading && (<Loader />)}
+                return (
+                  <Grid.Col key={product.id} sm={6} lg={4} xl={3}>
+                    <ProductCardV2
+                      key={product.id}
+                      src={product.image}
+                      name={product.name}
+                      price={prices}
+                      onClick={() => setDetail({ open: true, id: product.id })}
+                    />
+                  </Grid.Col>
+                );
+              })}
+            {loading && <Loader />}
           </Grid>
           {!loading && data?.total.aggregate.count === 0 && (
             <Empty
@@ -122,7 +131,11 @@ export default function Products(props: Props) {
         </Box>
 
         <Center my={68}>
-          <Button hidden={data?.products.length >= data?.total.aggregate.count} onClick={fetchMoreData} variant="outline">
+          <Button
+            hidden={data?.products.length >= data?.total.aggregate.count}
+            onClick={fetchMoreData}
+            variant="outline"
+          >
             Tampilkan Lebih Banyak Produk
           </Button>
         </Center>
@@ -134,7 +147,13 @@ export default function Products(props: Props) {
         onClose={() => setDetail({ open: false, id: '' })}
       />
 
-      <ModalCheckout attendanceId={attendanceId} opened={openCheckout} name={employeeName} onClose={() => setOpenCheckout(false)} onDoneWork={onDoneWork} />
+      <ModalCheckout
+        attendanceId={attendanceId}
+        opened={openCheckout}
+        name={employeeName}
+        onClose={() => setOpenCheckout(false)}
+        onDoneWork={onDoneWork}
+      />
     </>
   );
 }
@@ -150,8 +169,8 @@ const Loader = () => {
         );
       })}
     </>
-  )
-}
+  );
+};
 
 const EMPTY_PRODUCT = {
   title: 'Tidak Ada Produk',

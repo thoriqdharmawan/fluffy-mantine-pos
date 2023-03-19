@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Box, Center, Button, TextInput, Select, NumberInput } from '@mantine/core'
+import { useState } from 'react';
+import { Box, Center, Button, TextInput, Select, NumberInput } from '@mantine/core';
 import { useMutation, useQuery } from '@apollo/client';
 import { useDebouncedValue } from '@mantine/hooks';
 import { isNotEmpty, useForm } from '@mantine/form';
@@ -17,20 +17,20 @@ interface Props {
 }
 
 export default function CheckIn(props: Props) {
-  const [search, setSearch] = useState('')
-  const [loading, setLoading] = useState<boolean>(false)
-  const [debounce] = useDebouncedValue(search, 500)
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [debounce] = useDebouncedValue(search, 500);
 
-  const [employees, setEmployees] = useState([])
+  const [employees, setEmployees] = useState([]);
 
-  const { companyId } = useUser()
-  const { onWork } = props
+  const { companyId } = useUser();
+  const { onWork } = props;
 
   const form = useForm({
     initialValues: {
       employee: undefined,
       money_in_drawer_start: undefined,
-      note: ''
+      note: '',
     },
 
     validate: {
@@ -39,7 +39,7 @@ export default function CheckIn(props: Props) {
     },
   });
 
-  const [startWork] = useMutation(START_WORK, { client })
+  const [startWork] = useMutation(START_WORK, { client });
 
   const { error } = useQuery(GET_LIST_EMPLOYEES, {
     skip: !companyId,
@@ -48,24 +48,26 @@ export default function CheckIn(props: Props) {
       companyId,
       where: {
         companyId: companyId ? { _eq: companyId } : undefined,
-        _or: debounce ? { name: { _ilike: `%${debounce}%` }, username: { _ilike: `%${debounce}%` } } : undefined
-      }
+        _or: debounce
+          ? { name: { _ilike: `%${debounce}%` }, username: { _ilike: `%${debounce}%` } }
+          : undefined,
+      },
     },
     onCompleted: (data) => {
-      setEmployees(data?.employees.map((emp: any) => ({ value: emp.id, label: emp.name })))
-    }
-  })
+      setEmployees(data?.employees.map((emp: any) => ({ value: emp.id, label: emp.name })));
+    },
+  });
 
   if (error) {
-    console.error(error)
+    console.error(error);
   }
 
   const handleStartWork = () => {
-    const { hasErrors } = form.validate()
+    const { hasErrors } = form.validate();
 
     if (!hasErrors) {
-      setLoading(true)
-      const { values } = form
+      setLoading(true);
+      const { values } = form;
 
       startWork({
         variables: {
@@ -73,30 +75,32 @@ export default function CheckIn(props: Props) {
           employeeId: values.employee,
           money_in_drawer_start: values.money_in_drawer_start,
           note: values.note,
-        }
-      }).then(() => {
-        onWork()
-        showNotification({
-          title: 'Yukk Semangat Bekerja 💪💪',
-          message: 'Semoga yang kita kerjakan menjadi berkah, Aamiin 🤲',
-          icon: <IconCheck />,
-          color: 'green',
-        });
-      }).catch(() => {
-        showNotification({
-          title: 'Gagal memulai pekerjaan',
-          message: 'Silahkan coba lagi',
-          icon: <IconExclamationMark />,
-          color: 'red',
-        });
-      }).finally(() => setLoading(false))
+        },
+      })
+        .then(() => {
+          onWork();
+          showNotification({
+            title: 'Yukk Semangat Bekerja 💪💪',
+            message: 'Semoga yang kita kerjakan menjadi berkah, Aamiin 🤲',
+            icon: <IconCheck />,
+            color: 'green',
+          });
+        })
+        .catch(() => {
+          showNotification({
+            title: 'Gagal memulai pekerjaan',
+            message: 'Silahkan coba lagi',
+            icon: <IconExclamationMark />,
+            color: 'red',
+          });
+        })
+        .finally(() => setLoading(false));
     }
-  }
+  };
 
   return (
     <Center w="100%" sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Box w="100%" maw={400}>
-
         <Select
           mb="md"
           label="Nama"
@@ -128,10 +132,10 @@ export default function CheckIn(props: Props) {
           {...form.getInputProps('note')}
         />
 
-        <Button loading={loading} onClick={handleStartWork} size='md' mt="lg">
+        <Button loading={loading} onClick={handleStartWork} size="md" mt="lg">
           Mulai Bekerja 💪💪
         </Button>
       </Box>
     </Center>
-  )
+  );
 }

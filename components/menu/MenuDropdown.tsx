@@ -21,7 +21,7 @@ export default function MenuDropdown({ children, sections }: Props) {
         {sections?.map((section, id) => {
           return (
             <div key={id}>
-              {section.label && (<Menu.Label>{section.label}</Menu.Label>)}
+              {section.label && <Menu.Label>{section.label}</Menu.Label>}
               {section.items.map((item: MenuItemProps, id) => {
                 return <Menu.Item {...item} key={id} />;
               })}

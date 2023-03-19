@@ -20,7 +20,7 @@ interface TableOrderHistoriesProps {
 const LIMIT = 10;
 
 export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
-  const { companyId } = useUser()
+  const { companyId } = useUser();
 
   const pagination = usePagination({ total: 10, initialPage: 1 });
 
@@ -32,8 +32,8 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
       limit: LIMIT,
       offset: (pagination.active - 1) * LIMIT,
       where: {
-        companyId: companyId ? { _eq: companyId } : undefined
-      }
+        companyId: companyId ? { _eq: companyId } : undefined,
+      },
     },
   });
 
@@ -63,7 +63,9 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
 
   return (
     <>
-      <Title order={4} mb="md">Total Transaksi: {data?.total.aggregate.count}</Title>
+      <Title order={4} mb="md">
+        Total Transaksi: {data?.total.aggregate.count}
+      </Title>
       <Paper shadow="sm" p="md" withBorder w="100%">
         <Table verticalSpacing="xs" striped>
           <thead>
@@ -89,6 +91,5 @@ export function ListTransactions({ onClick }: TableOrderHistoriesProps) {
         </Group>
       </Paper>
     </>
-
   );
 }

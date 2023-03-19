@@ -55,11 +55,11 @@ const getNextLabel = (active: number) => {
 export default function DetailModal(props: Props) {
   const { open, onClose, data, refetchTotalTransaction, transactionNumber, attendance } = props;
   const { emptyCart } = useCart();
-  const { companyId } = useUser()
+  const { companyId } = useUser();
   const [active, setActive] = useState(0);
   const [error, setError] = useState(false);
-  const [transactionId, setTransactionId] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
+  const [transactionId, setTransactionId] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<FormValues>({
     initialValues: {
@@ -93,14 +93,14 @@ export default function DetailModal(props: Props) {
 
   const totalPayment = useMemo(() => {
     const actualPrices = data.map(({ quantity, min_wholesale, price_wholesale, itemTotal }) => {
-      return quantity >= min_wholesale ? price_wholesale * quantity : itemTotal
-    })
+      return quantity >= min_wholesale ? price_wholesale * quantity : itemTotal;
+    });
 
     return actualPrices.reduce((acc, cur) => acc + cur, 0);
   }, [data]);
 
   const handleCreateTransaction = () => {
-    setLoading(true)
+    setLoading(true);
     const { values } = form;
 
     const offset = (values.paymentAmount || 0) - totalPayment;
@@ -138,7 +138,7 @@ export default function DetailModal(props: Props) {
       variables: variables,
     })
       .then((res) => {
-        setTransactionId(res.data?.insert_transactions.returning?.[0]?.id)
+        setTransactionId(res.data?.insert_transactions.returning?.[0]?.id);
         emptyCart();
         showNotification({
           title: 'Yeayy, Sukses!! 😊',
@@ -154,7 +154,7 @@ export default function DetailModal(props: Props) {
         );
         refetchTotalTransaction();
         setActive((current) => (current < 3 ? current + 1 : current));
-        setLoading(false)
+        setLoading(false);
       })
       .catch(() => {
         showNotification({
@@ -224,7 +224,9 @@ export default function DetailModal(props: Props) {
         <Button disabled={loading || active === 0} variant="default" onClick={prevStep}>
           Kembali
         </Button>
-        <Button loading={loading} onClick={nextStep}>{getNextLabel(active)}</Button>
+        <Button loading={loading} onClick={nextStep}>
+          {getNextLabel(active)}
+        </Button>
       </Flex>
     </Modal>
   );
