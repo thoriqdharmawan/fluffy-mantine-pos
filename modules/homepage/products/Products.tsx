@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Text, Flex, Box, Grid, ScrollArea, ActionIcon, Menu, Button, Center } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { useMutation, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { IconChevronDown, IconCircleCheck } from '@tabler/icons';
 
-import { DONE_WORK } from '../../../services/attendace';
 import { Empty } from '../../../components/empty-state';
 import { GET_LIST_PRODUCTS_MENUS } from '../../../services/products';
 import { getPrices } from '../../../context/helpers';
@@ -32,6 +31,7 @@ export default function Products(props: Props) {
 
   const [openCheckout, setOpenCheckout] = useState<boolean>(false);
   const [search, setSearch] = useState('');
+  const [loadingData, setLoadingData] = useState<boolean>(false)
   const [detail, setDetail] = useState({
     open: false,
     id: '',
@@ -41,20 +41,33 @@ export default function Products(props: Props) {
   const { data, loading, fetchMore } = useQuery(GET_LIST_PRODUCTS_MENUS, {
     client: client,
     fetchPolicy: 'cache-and-network',
+    skip: !companyId,
     variables: {
-      company_id: companyId,
-      search: `%${debounce}%`,
       limit: LIMIT,
       offset: 0,
+      where: {
+        _and: {
+          company: { id: { _eq: companyId } },
+          _or: debounce ? [
+            { description: { _ilike: `%${debounce}%` } },
+            { name: { _ilike: `%${debounce}%` } },
+          ] : undefined,
+        }
+      }
     },
   });
 
+  const totalData = data?.products.length
+  const total = data?.total.aggregate.count
+
   const fetchMoreData = () => {
+    setLoadingData(true)
     fetchMore({
       variables: {
-        offset: data.products.length,
+        offset: totalData,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+        setLoadingData(false)
         if (!fetchMoreResult) return prev;
         return Object.assign({}, prev, {
           products: [...prev.products, ...fetchMoreResult.products].filter(
@@ -120,9 +133,9 @@ export default function Products(props: Props) {
                   </Grid.Col>
                 );
               })}
-            {loading && <Loader />}
+            {(loadingData || loading) && <Loader />}
           </Grid>
-          {!loading && data?.total.aggregate.count === 0 && (
+          {!loadingData && !loading && total === 0 && (
             <Empty
               title={debounce ? EMPTY_SEARCH.title : EMPTY_PRODUCT.title}
               label={debounce ? EMPTY_SEARCH.label : EMPTY_PRODUCT.label}
@@ -130,15 +143,17 @@ export default function Products(props: Props) {
           )}
         </Box>
 
-        <Center my={68}>
-          <Button
-            hidden={data?.products.length >= data?.total.aggregate.count}
-            onClick={fetchMoreData}
-            variant="outline"
-          >
-            Tampilkan Lebih Banyak Produk
-          </Button>
-        </Center>
+        {!loading && !loadingData && (total - totalData > 0) && (
+          <Center my={68}>
+            <Button
+              hidden={totalData >= total}
+              onClick={fetchMoreData}
+              variant="outline"
+            >
+              Tampilkan Lebih Banyak Produk
+            </Button>
+          </Center>
+        )}
       </ScrollArea>
 
       <DetailProduct

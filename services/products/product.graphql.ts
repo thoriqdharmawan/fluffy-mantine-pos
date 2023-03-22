@@ -46,23 +46,27 @@ export const GET_LIST_PRODUCTS = gql`
   }
 `;
 export const GET_LIST_PRODUCTS_MENUS = gql`
-  query GetListProductMenus($company_id: uuid!, $search: String, $limit: Int, $offset: Int) {
+  query GetListProductMenus(
+    $where: products_bool_exp!
+    $limit: Int
+    $offset: Int
+  ) {
     total: products_aggregate(
-      where: { company: { id: { _eq: $company_id } }, name: { _ilike: $search } }
+      where: $where
     ) {
       aggregate {
         count
       }
     }
     products(
-      where: { company: { id: { _eq: $company_id } }, name: { _ilike: $search } }
+      where: $where
       limit: $limit
       offset: $offset
+      order_by: {name: asc}
     ) {
       id
       name
       image
-
       product_variants_aggregate {
         aggregate {
           max {
@@ -75,6 +79,7 @@ export const GET_LIST_PRODUCTS_MENUS = gql`
       }
     }
   }
+
 `;
 
 export const GET_PRODUCT_BY_ID = gql`
