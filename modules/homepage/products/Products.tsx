@@ -87,12 +87,12 @@ export default function Products(props: Props) {
         type="auto"
       >
         <Box
-          p="lg"
+          px="lg"
           sx={(theme) => ({
             background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0],
           })}
         >
-          <Flex gap="lg" w="100%" mb="lg" justify="space-between" align="center">
+          <Flex gap="lg" w="100%" py="lg" pos="sticky" top={0} justify="space-between" align="center" sx={(theme) => ({ zIndex: 1, background: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0], })}>
             <Flex justify="space-between" align="center" gap="sm">
               <Menu shadow="md" width={200}>
                 <Text sx={{ whiteSpace: 'pre' }} variant="gradient" size="md" fw="bold">
