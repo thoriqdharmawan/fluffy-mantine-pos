@@ -8,6 +8,7 @@ type Props = {
   name: string;
   src: string;
   price: string;
+  subtotal: string;
   quantity: number;
   variants: string[];
   onAdd: () => void;
@@ -21,6 +22,7 @@ export default function ProductItemCart({
   src,
   name,
   price,
+  subtotal,
   variants,
   onAdd,
   onSubtract,
@@ -34,14 +36,27 @@ export default function ProductItemCart({
     }, [id]) || 0;
 
   return (
-    <Paper p="lg" mb="xl" h="auto" shadow="sm" radius="md">
+    <Paper px="md" py="sm" mb="md" h="auto" shadow="sm" radius="md">
       <Flex justify="start" mb="sm">
-        <Image radius="sm" src={src} withPlaceholder width={60} height={60} mr="sm" />
-        <Box>
-          <Title order={5}>{name}</Title>
-          <Text color="dimmed" size="md">
-            {price}
-          </Text>
+        {/* <Image radius="sm" src={src} withPlaceholder width={60} height={60} mr="sm" /> */}
+        <Box w="100%">
+          <Title order={5} mb="xs">{name}</Title>
+          <Flex justify='space-between'>
+            <Text color="dimmed" size="sm">
+              Harga Satuan
+            </Text>
+            <Text color="dimmed" size="sm">
+              {price}
+            </Text>
+          </Flex>
+          <Flex justify='space-between'>
+            <Text color="dimmed" size="sm">
+              Harga Total
+            </Text>
+            <Text color="dimmed" size="sm">
+              {subtotal}
+            </Text>
+          </Flex>
           <Flex mt="sm" gap="sm">
             {variants.map((v, i) => (
               <Badge sx={{ textTransform: 'capitalize' }} key={i}>
