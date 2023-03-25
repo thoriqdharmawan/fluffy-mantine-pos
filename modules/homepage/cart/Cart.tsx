@@ -36,7 +36,7 @@ export default function Cart(props: Props) {
           sx={(theme) => ({
             zIndex: 1,
             alignItems: 'end',
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : '#fff',
+            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : '#fff',
           })}
         >
           <Box>
