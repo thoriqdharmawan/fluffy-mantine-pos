@@ -82,6 +82,7 @@ export default function DetailProduct(props: Props) {
         return key === '__typename' ? undefined : value;
       });
 
+      console.log({ ...pure, productId: id, name, src: image, variants, type })
       addItem({ ...pure, productId: id, name, src: image, variants, type }, quantity);
 
       handleClose();

@@ -43,15 +43,15 @@ export default function DetailOrders(props: Props) {
           <Text ta="center">{product.quantity}</Text>
         </td>
         <td>
-          <Text ta="right">{convertToRupiah(actualPrice)}</Text>
+          <Text miw={90} ta="right">{convertToRupiah(actualPrice)}</Text>
         </td>
         <td>
-          <Text ta="right">
+          <Text miw={90} ta="right">
             {convertToRupiah(isWholesale ? actualPrice * product.quantity : product.itemTotal)}
           </Text>
         </td>
       </tr>
-    );
+    )
   });
 
   return (
@@ -75,12 +75,12 @@ export default function DetailOrders(props: Props) {
         <tbody>
           {rows}
           <tr>
-            <td colSpan={5}>
+            <td colSpan={4}>
               <Text py="md" ta="right" fw={700}>
                 Subtotal
               </Text>
             </td>
-            <td>
+            <td colSpan={2}>
               <Text fw={700} ta="right">
                 {convertToRupiah(totalPayment)}
               </Text>

@@ -115,7 +115,6 @@ export default function DetailModal(props: Props) {
       payment_method: values.paymentMethod,
       payment_type: values.paymentType,
       status: offset >= 0 ? 'COMPLETED' : 'INCOMPLETE',
-      // ! hardcoded
       employeeId: attendance?.employee?.id,
       companyId: companyId,
       // merchantId: null,
@@ -128,11 +127,15 @@ export default function DetailModal(props: Props) {
           quantity_sold: product.quantity,
           unit_price: product.price,
           total_price: product.quantity * product.price,
-          // transactionId: product.
           variants,
         };
       }),
     };
+
+    const dataDecrease = data.filter(d => d.productId)?.map(({ id, quantity }) => ({
+      id,
+      quantity: quantity * -1,
+    }))
 
     addTransaction({
       variables: variables,
@@ -146,12 +149,7 @@ export default function DetailModal(props: Props) {
           icon: <IconCheck />,
           color: 'green',
         });
-        decreaseStock(
-          data?.map(({ id, quantity }) => ({
-            id,
-            quantity: quantity * -1,
-          }))
-        );
+        decreaseStock(dataDecrease);
         refetchTotalTransaction();
         setActive((current) => (current < 3 ? current + 1 : current));
         setLoading(false);

@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Paper, Title, Box, ScrollArea, Button, Flex } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { useCart } from 'react-use-cart';
+import { IconPlus } from '@tabler/icons';
 
 import { convertToRupiah, getVariants } from '../../../context/helpers';
-import ProductItemCart from './ProductItemCart';
 import { Empty } from '../../../components/empty-state';
+import AddManualProduct from './AddManualProduct';
+import ProductItemCart from './ProductItemCart';
 
 interface Props {
   onNextToPayment: (allItems: any) => void;
@@ -15,6 +18,7 @@ export default function Cart(props: Props) {
   const { onNextToPayment, transacitonNumber } = props;
   const { items, updateItemQuantity, removeItem, emptyCart } = useCart();
   const [allItems, setallItems] = useState<any[]>([{}]);
+  const [opened, { open, close }] = useDisclosure(false)
 
   useEffect(() => {
     setallItems(JSON.parse(JSON.stringify(items)));
@@ -25,17 +29,20 @@ export default function Cart(props: Props) {
       <Box component={ScrollArea} h="calc(100vh - 70px)">
         <Flex
           p="md"
+          mb="lg"
           pos="sticky"
           top={0}
           justify="space-between"
-          mb="lg"
           sx={(theme) => ({
             zIndex: 1,
-            alignItems: 'center',
-            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[7] : '#fff',
+            alignItems: 'end',
+            backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : '#fff',
           })}
         >
-          <Title order={3}>Pesanan {transacitonNumber}</Title>
+          <Box>
+            <Title order={3}>Pesanan ke {transacitonNumber}</Title>
+            <Button onClick={open} leftIcon={<IconPlus size={16} />} compact mt="sm" color="teal" variant='light'>Tambahkan Manual</Button>
+          </Box>
 
           <Button compact variant="subtle" onClick={emptyCart}>
             Kosongkan Keranjang
@@ -45,7 +52,7 @@ export default function Cart(props: Props) {
           {allItems?.map((item: any, i) => {
             const { variants, coord, min_wholesale, price_wholesale, price, quantity } = item || {};
 
-            const actualPrice = quantity >= min_wholesale ? price_wholesale || price : price;
+            const actualPrice = (quantity >= min_wholesale ? price_wholesale || price : price) || 0
 
             const variant = getVariants(variants, coord);
 
@@ -56,7 +63,8 @@ export default function Cart(props: Props) {
                 quantity={quantity || 0}
                 name={item.name}
                 src={item.src}
-                price={convertToRupiah(actualPrice || 0)}
+                price={convertToRupiah(actualPrice)}
+                subtotal={convertToRupiah(actualPrice * quantity)}
                 variants={variant}
                 onAdd={() => updateItemQuantity(item.id, (quantity || 0) + 1)}
                 onSubtract={() => updateItemQuantity(item.id, (quantity || 0) - 1)}
@@ -85,6 +93,8 @@ export default function Cart(props: Props) {
       >
         Lanjut Ke Detail Pesanan
       </Button>
+
+      <AddManualProduct opened={opened} onClose={close} />
     </Paper>
   );
 }
