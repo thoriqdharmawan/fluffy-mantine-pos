@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { useRouter } from 'next/router';
 
 import { InitialUserState, useUser } from './user'
 import { Authentication } from '../services/authentication'
 
 const AuthStateChangeProvider = ({ children }) => {
+  const router = useRouter();
   const user = useUser()
   const { SetUser } = user
 
@@ -21,6 +23,7 @@ const AuthStateChangeProvider = ({ children }) => {
       } else {
         console.log('User is not authenticated')
         SetUser(InitialUserState)
+        router.push('/login');
       }
     })
   }
