@@ -1,5 +1,5 @@
 import { Navbar as Nav, Stack, Tooltip, UnstyledButton, createStyles } from '@mantine/core';
-import { IconHome2, IconHistory } from '@tabler/icons';
+import { IconHome2, IconHistory, IconTrendingUp } from '@tabler/icons';
 import { useRouter } from 'next/router';
 import { ColorSchemeToggle } from '../color-scheme-toggle';
 
@@ -30,7 +30,7 @@ const data = [
   { icon: IconHome2, label: 'Home Page', href: '/' },
   { icon: IconHistory, label: 'Riwayat Transaksi', href: '/transactions' },
   // { icon: IconList, label: 'Daftar Produk', href: '/products' },
-  // { icon: IconCash, label: 'Pendapatan', href: '/incomes' },
+  { icon: IconTrendingUp, label: 'Pendapatan', href: '/incomes' },
 ];
 
 export default function Navbar() {

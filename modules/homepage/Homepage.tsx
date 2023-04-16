@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Box, Flex, Overlay } from '@mantine/core';
+import { Box, Flex } from '@mantine/core';
 import { useQuery } from '@apollo/client';
 import dayjs from 'dayjs';
 
