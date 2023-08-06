@@ -49,7 +49,7 @@ export default function index({ }: Props) {
   ], [filter])
 
 
-  const { data, loading, error } = useQuery(GET_INCOMES, {
+  const { data, loading } = useQuery(GET_INCOMES, {
     client: client,
     skip: !user.companyId,
     fetchPolicy: 'network-only',
