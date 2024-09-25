@@ -1,39 +1,105 @@
-# Mantine Next Template
+# 🌐 fluffy-mantine-pos
 
-Get started with Mantine + Next with just a few button clicks.
-Click `Use this template` button at the header of repository or [follow this link](https://github.com/mantinedev/mantine-next-template/generate) and
-create new repository with `@mantine` packages. Note that you have to be logged in to GitHub to generate template.
+**fluffy-mantine-pos** is a web-based Point of Sale (POS) application built using Next.js and Mantine. Designed for a sleek and intuitive user experience, Fluffy Web POS helps businesses manage sales, customers, and inventory all from the convenience of the web.
 
-## Features
+## 🎯 Key Features
 
-This template comes with several essential features:
+- 💻 **Web-Based POS**: Seamless management of sales from any browser.
+- 🛒 **Inventory & Sales Tracking**: Efficiently track stock and sales.
+- 📦 **Modular Components**: Built with Mantine's powerful and flexible component library.
+- 🌈 **Dark Mode Support**: Integrated dark mode with Storybook for component development.
+- 🔄 **Infinite Scrolling**: Easily browse through large data sets with infinite scroll.
 
-- Server side rendering setup for Mantine
-- Color scheme is stored in cookie to avoid color scheme mismatch after hydration
-- Storybook with color scheme toggle
-- Jest with react testing library
-- ESLint setup with [eslint-config-mantine](https://github.com/mantinedev/eslint-config-mantine)
+## 🛠️ Technologies Used
 
-## npm scripts
+- **Next.js**: Framework for React with server-side rendering and static site generation.
+- **Mantine**: Component library for React with fully responsive and customizable UI elements.
+- **Apollo Client**: For managing GraphQL data and queries.
+- **Firebase**: Backend service for real-time data synchronization and authentication.
 
-### Build and dev scripts
+## 🚀 Getting Started
 
-- `dev` – start dev server
-- `build` – bundle application for production
-- `export` – exports static website to `out` folder
-- `analyze` – analyzes application bundle with [@next/bundle-analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)
+Follow these steps to get the Fluffy Web POS app up and running.
 
-### Testing scripts
+### 1. Clone the Repository
 
-- `typecheck` – checks TypeScript types
-- `lint` – runs ESLint
-- `prettier:check` – checks files with Prettier
-- `jest` – runs jest tests
-- `jest:watch` – starts jest watch
-- `test` – runs `jest`, `prettier:check`, `lint` and `typecheck` scripts
+```bash
+git clone https://github.com/yourusername/fluffy-web-pos.git
+cd fluffy-web-pos
+```
 
-### Other scripts
+### 2. Install Dependencies
 
-- `storybook` – starts storybook dev server
-- `storybook:build` – build production storybook bundle to `storybook-static`
-- `prettier:write` – formats all files with Prettier
+Install all the project dependencies using:
+
+```bash
+npm install
+```
+
+### 3. Run the App in Development Mode
+
+To start the development server, run:
+
+```bash
+npm run dev
+```
+
+The app will be available at `http://localhost:3000`.
+
+### 4. Build the App for Production
+
+To build the app for production:
+
+```bash
+npm run build
+```
+
+### 5. Run Tests
+
+Make sure all tests are passing:
+
+```bash
+npm run test
+```
+
+## ⚙️ Environment Variables
+
+To configure your environment variables, create a `.env.local` file in the root directory:
+
+```
+NEXT_PUBLIC_API_URL=https://api.example.com
+FIREBASE_API_KEY=your-firebase-api-key
+```
+
+## 🧩 Project Structure
+
+```bash
+├── components     # Reusable UI components
+├── pages          # Next.js page routes
+├── styles         # Global and component-specific styles
+├── hooks          # Custom React hooks
+└── lib            # Utilities and API calls
+```
+
+## 🛠️ Available Scripts
+
+- **Development**: `npm run dev` – Start the development server.
+- **Build**: `npm run build` – Build the app for production.
+- **Start**: `npm run start` – Start the production server.
+- **Lint**: `npm run lint` – Check for code quality issues.
+- **Test**: `npm run test` – Run all test cases.
+- **Storybook**: `npm run storybook` – Launch Storybook to visualize components.
+
+## 🧪 Storybook
+
+Fluffy Web POS is integrated with Storybook for UI development. You can launch Storybook using:
+
+```bash
+npm run storybook
+```
+
+Storybook provides a live preview of your components and supports **dark mode**.
+
+## 📄 License
+
+This project is licensed under the MIT License.
